@@ -36,7 +36,7 @@
               </div>
 
               <ul class="nav-menu">
-                <li>
+                <!-- <li>
                   <button id="presentbutton" class="invisible btn btn-success">
                     <i class="fas fa-play" aria-hidden="true"></i><span class="nav-text"> Enable</span>
                   </button>
@@ -45,6 +45,12 @@
                   <button id="unpresentbutton" class="invisible btn btn-cancel">
                     <i class="fas fa-stop" aria-hidden="true"></i><span class="nav-text"> Disable</span>
                   </button>
+                </li> -->
+                <li>
+                  <div id="camerabutton" class="nav-link nav-button">
+                    <span><i class="fas fa-camera"></i></span>
+                    <label>Camera</label>
+                  </div>
                 </li>
                 <li>
                   <div id="mutebutton" class="nav-link nav-button">
@@ -115,7 +121,7 @@
                       <input id="password" type="password" name="password"
                              autocomplete="current-password" class="form-control"/>
                     </div>
-                    <label>Enable at start:</label>
+                    <!-- <label>Enable at start:</label>
                     <div class="present-switch">
                       <p class="switch-radio">
                         <input id="presentoff" type="radio" name="presentradio" value="" checked/>
@@ -129,7 +135,7 @@
                         <input id="presentboth" type="radio" name="presentradio" value="both"/>
                         <label for="presentboth">Camera and microphone</label>
                       </p>
-                    </div>
+                    </div> -->
                     <div class="clear"></div>
                     <div class="connect">
                       <input id="connectbutton" type="submit" class="btn btn-blue" value="Connect"/>
@@ -168,7 +174,7 @@
             </div>
           </div>
         </div>
-        <div id="mediaoptions" class="invisible">
+        <div id="mediaoptions">
           <fieldset>
             <legend>Media Options</legend>
             <label for="videoselect" class="sidenav-label-first">Camera:</label>
