@@ -206,6 +206,8 @@ function reflectSettings() {
     let settings = getSettings();
     let store = false;
 
+    settings.localMute = true;
+    store = true;
     setLocalMute(settings.localMute);
 
     let videoselect = getSelectElement('videoselect');
@@ -317,11 +319,21 @@ function isMobileLayout() {
  */
 function hideVideo(force) {
     let mediadiv = document.getElementById('peers');
-    if(mediadiv.childElementCount > 0 && !force)
+    let visiblePeers = Array.from(mediadiv.children).filter(el => {
+        return el instanceof HTMLElement &&
+               el.classList.contains('peer') &&
+               el.style.display !== 'none' &&
+               el.offsetWidth > 0 &&
+               el.offsetHeight > 0;
+    });
+
+    if(visiblePeers.length > 0 && !force)
         return;
+
     setVisibility('video-container', false);
     scheduleReconsiderDownRate();
 }
+
 
 /**
  * Show the video pane.
@@ -546,17 +558,51 @@ addEventListener('orientationchange', setViewportHeight);
 document.getElementById('camerabutton').onclick = async function(e) {
     e.preventDefault();
     const button = document.getElementById('camerabutton');
-    if(button.classList.contains('muted')) {
-        button.classList.remove('muted');
+    const camStream = findUpMedia('camera');
 
-        let id = findUpMedia('camera');
-        if(!id)
-            await addLocalMedia();
-    } else {
-        button.classList.add('muted');
+    if (camStream) {
         closeUpMedia('camera');
+        button.classList.add('muted');
+    } else {
+        await addCameraMedia();
+        button.classList.remove('muted');
     }
+};
+
+async function addCameraMedia() {
+    let settings = getSettings();
+    let video = settings.video ? {deviceId: settings.video} : false;
+
+    if (video) {
+        let resolution = settings.resolution;
+        if (resolution) {
+            video.width = { ideal: resolution[0] };
+            video.height = { ideal: resolution[1] };
+        } else if (settings.blackboardMode) {
+            video.width = { min: 640, ideal: 1920 };
+            video.height = { min: 400, ideal: 1080 };
+        } else {
+            video.aspectRatio = { ideal: 4 / 3 };
+        }
+    }
+
+    let constraints = { audio: false, video: video };
+    let stream;
+
+    try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (e) {
+        displayError(e);
+        return;
+    }
+
+    let c = newUpStream();
+    c.label = 'camera';
+
+    await setUpStream(c, stream);
+    await setMedia(c, settings.mirrorView);
 }
+
 
 // getButtonElement('presentbutton').onclick = async function(e) {
 //     e.preventDefault();
@@ -700,19 +746,57 @@ getInputElement('hqaudiobox').onchange = function(e) {
     replaceCameraStream();
 };
 
-document.getElementById('mutebutton').onclick = function(e) {
+document.getElementById('mutebutton').onclick = async function(e) {
     e.preventDefault();
-    let localMute = getSettings().localMute;
-    // if (localMute && !findUpMedia('camera')) {
-    //     displayMessage('Please use Enable to enable your camera or microphone.');
-    // } else {
-    //     localMute = !localMute;
-    //     setLocalMute(localMute, true);
-    // }
 
+    let localMute = getSettings().localMute;
     localMute = !localMute;
+
+    // Mets à jour l'icône et l’état
     setLocalMute(localMute, true);
+
+    // Active/désactive le micro en fonction de localMute
+    if (localMute) {
+        closeUpMedia('microphone');
+    } else {
+        await addMicrophoneMedia();
+    }
 };
+
+
+
+
+
+async function addMicrophoneMedia() {
+    let settings = getSettings();
+    let audio = settings.audio ? {deviceId: settings.audio} : false;
+
+    if(audio) {
+        if(!settings.preprocessing) {
+            audio.echoCancellation = false;
+            audio.noiseSuppression = false;
+            audio.autoGainControl = false;
+        }
+    }
+
+    let constraints = { audio: audio, video: false };
+    let stream = null;
+
+    try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (e) {
+        displayError(e);
+        return;
+    }
+
+    let c = newUpStream();
+    c.label = 'microphone';
+
+    await setUpStream(c, stream);
+    await setMedia(c, false);
+}
+
+
 
 document.getElementById('sharebutton').onclick = function(e) {
     e.preventDefault();
@@ -2071,6 +2155,12 @@ async function setMedia(c, mirror, video) {
         peersdiv.appendChild(div);
     }
 
+    if(c.label == "microphone") {
+        div.style.display = "none";
+        div.style.width = "0px";
+        div.style.height = "0px"
+    }
+
     showHideMedia(c, div)
 
     let media = /** @type {HTMLVideoElement} */
@@ -2117,7 +2207,11 @@ async function setMedia(c, mirror, video) {
     setLabel(c);
     setMediaStatus(c);
 
-    showVideo();
+    
+    if(c.label !== "microphone") {
+        showVideo();
+    }
+    
     resizePeers();
 }
 
@@ -2400,15 +2494,21 @@ function resizePeers() {
     // Window resize can call this method too early
     if (!serverConnection)
         return;
-    let count =
+    /* let count =
         Object.keys(serverConnection.up).length +
-        Object.keys(serverConnection.down).length;
+        Object.keys(serverConnection.down).length; */
     let peers = document.getElementById('peers');
+    let container = document.getElementById("video-container");
+    const visiblePeers = Array.from(peers.children).filter(p =>
+        p.classList.contains('peer') &&
+        window.getComputedStyle(p).display !== 'none'
+    );
+    let count = visiblePeers.length;
     let columns = Math.ceil(Math.sqrt(count));
     if (!count)
         // No video, nothing to resize.
         return;
-    let container = document.getElementById("video-container");
+    
     // Peers div has total padding of 40px, we remove 40 on offsetHeight
     // Grid has row-gap of 5px
     let rows = Math.ceil(count / columns);
