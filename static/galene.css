@@ -102,7 +102,7 @@
 #chpwspan a {
     padding: 4px 0;
     font-size: 0.9em;
-    color: #e4157e;
+    color: #FC5757;
 }
 
 #chpwspan.invisible {
@@ -112,13 +112,13 @@
 .sidenav .user-logout a {
     font-size: 1em;
     padding: 7px 0 0;
-    color: #e4157e;
+    color: #FC5757;
     cursor: pointer;
     line-height: .7;
 }
 
 .sidenav .user-logout a:hover {
-    color: #ab0659;
+    color: #ca2525;
 }
 
 .navbar, .navbar .container, .navbar .container-fluid, .navbar .container-lg, .navbar .container-md, .navbar .container-sm, .navbar .container-xl {
@@ -635,7 +635,7 @@ textarea.form-reply {
 
 .nav-link {
     padding: 0;
-    color: #dbd9d9;
+    color: #E0DED9;
     min-width: 30px;
     display: block;
     text-align: center;
@@ -651,23 +651,23 @@ textarea.form-reply {
 .nav-link label {
     display: block;
     cursor: pointer;
-    color: #fff;
+    color: #E0DED9;
     font-size: 55%;
 }
 
 .nav-link:hover {
-    color: #c2a4e0;
+    color: #aeaca7;
 }
 .nav-link label:hover {
-    color: #c2a4e0;
+    color: #aeaca7;
 }
 
 .nav-cancel, .muted, .nav-cancel label, .muted label {
-    color: #d03e3e
+    color: #FC5757
 }
 
 .nav-cancel:hover, .muted:hover, .nav-cancel label:hover, .muted label:hover {
-    color: #d03e3e
+    color: #ca2525
 }
 
 .nav-button {
@@ -685,7 +685,7 @@ textarea.form-reply {
     margin: 0;
     font-size: 1rem;
     font-weight: 700;
-    color: #ebebeb;
+    color: #E0DED9;
     line-height: 2em;
 }
 
@@ -939,7 +939,7 @@ h1 {
 }
 
 .sidenav {
-    background-color: #4d076b;
+    background-color: #004554;
     box-shadow: 0 0 24px 0 rgba(71,77,86,.1), 0 1px 0 0 rgba(71,77,86,.08);
     display: block;
     position: fixed;
@@ -959,14 +959,14 @@ h1 {
     padding: 10px 20px;
     text-decoration: none;
     font-size: 30px;
-    color: #dbd9d9;
+    color: #E0DED9;
     display: block;
     transition: 0.3s;
     line-height: 1.0;
 }
 
 .sidenav a:hover {
-    color: #c2a4e0;
+    color: #aeaca7;
 }
 
 .sidenav .closebtn {
@@ -996,7 +996,7 @@ h1 {
 }
 
 .sidenav-header h2{
-    color: #fff;
+    color: #E0DED9;
     padding: 10px;
     margin: 0;
     max-width: 70%;
@@ -1090,19 +1090,19 @@ header .collapse {
     text-align: center;
     cursor: pointer;
     font-size: 20px;
-    color: #dbd9d9;
+    color: #E0DED9;
     margin-right: 20px;
     margin-left: 5px;
 }
 
 header .collapse:hover {
-    color: #c2a4e0;
+    color: #aeaca7;
 }
 
 .galene-header {
     font-size: 1.3rem;
     font-weight: 900;
-    color: #dbd9d9;
+    color: #E0DED9;
     line-height: 34px;
 }
 
