@@ -882,6 +882,11 @@ h1 {
     cursor: ew-resize;
 }
 
+#showPswBtn-container {
+    display: flex;
+    justify-content: end;
+}
+
 #peers {
     padding: 10px;
     display: grid;
@@ -1346,8 +1351,8 @@ header .collapse:hover {
 
 :root{
     --contextualMenuBg: #eee;
-    --contextualMenuShadow: 1px 1px 1px #444; */
-    --contextualMenuRadius: 0px; */
+    --contextualMenuShadow: 1px 1px 1px #444;
+    --contextualMenuRadius: 0px;
     --contextualMenuText: black;
 
     --contextualSubMenuBg: #eee;

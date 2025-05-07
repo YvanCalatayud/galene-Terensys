@@ -639,6 +639,20 @@ function setVisibility(id, visible) {
         elt.classList.add('invisible');
 }
 
+document.getElementById('showPswBtn').onclick = function(e) {
+    const elt = document.getElementById('passwordform');
+    const button = document.getElementById('showPswBtn');
+    const currentlyVisible = !elt.classList.contains('invisible');
+    
+    setVisibility('passwordform', !currentlyVisible);
+
+    if (currentlyVisible) {
+        button.textContent = 'I am admin';
+    } else {
+        button.textContent = 'Hide admin login';
+    }
+};
+
 /**
  * Shows and hides various UI elements depending on the protocol state.
  */

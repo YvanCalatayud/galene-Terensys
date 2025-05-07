@@ -116,11 +116,15 @@
                       <input id="username" type="text" name="username"
                              autocomplete="username" class="form-control"/>
                     </div>
-                    <div id="passwordform">
+                    <div id="passwordform" class="invisible">
                       <label for="password">Password</label>
                       <input id="password" type="password" name="password"
-                             autocomplete="current-password" class="form-control"/>
+                             autocomplete="current-password" class="form-control" placeholder="Only for admin"/>
                     </div>
+                    <div id="showPswBtn-container">
+                      <div class="btn" id="showPswBtn">I am admin</div>
+                    </div>
+                    
                     <!-- <label>Enable at start:</label>
                     <div class="present-switch">
                       <p class="switch-radio">
