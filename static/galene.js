@@ -564,12 +564,11 @@ document.getElementById('camerabutton').onclick = async function(e) {
         closeUpMedia('camera');
         button.classList.add('muted');
     } else {
-        await addCameraMedia();
-        button.classList.remove('muted');
+        await addCameraMedia(button);
     }
 };
 
-async function addCameraMedia() {
+async function addCameraMedia(cameraButton) {
     let settings = getSettings();
     let video = settings.video ? {deviceId: settings.video} : false;
 
@@ -596,6 +595,7 @@ async function addCameraMedia() {
         return;
     }
 
+    cameraButton.classList.remove('muted');
     let c = newUpStream();
     c.label = 'camera';
 
@@ -752,14 +752,12 @@ document.getElementById('mutebutton').onclick = async function(e) {
     let localMute = getSettings().localMute;
     localMute = !localMute;
 
-    // Mets à jour l'icône et l’état
-    setLocalMute(localMute, true);
-
     // Active/désactive le micro en fonction de localMute
     if (localMute) {
         closeUpMedia('microphone');
+        setLocalMute(localMute, true);
     } else {
-        await addMicrophoneMedia();
+        await addMicrophoneMedia(localMute);
     }
 };
 
@@ -767,7 +765,7 @@ document.getElementById('mutebutton').onclick = async function(e) {
 
 
 
-async function addMicrophoneMedia() {
+async function addMicrophoneMedia(localMute) {
     let settings = getSettings();
     let audio = settings.audio ? {deviceId: settings.audio} : false;
 
@@ -789,6 +787,8 @@ async function addMicrophoneMedia() {
         return;
     }
 
+    // Mets à jour l'icône et l’état
+    setLocalMute(localMute, true);
     let c = newUpStream();
     c.label = 'microphone';
 
@@ -2991,11 +2991,11 @@ async function gotJoined(kind, group, perms, status, data, error, message) {
             } finally {
                 button.disabled = false;
             }
-        } else {
+        } /* else {
             displayMessage(
                 "Press Enable to enable your camera or microphone"
             );
-        }
+        } */
     }
 }
 
