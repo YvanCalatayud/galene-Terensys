@@ -1232,6 +1232,12 @@ header .collapse:hover {
         display: none;
     }
 
+    .muted .fa-camera::after {
+        font-size: 52px;
+        left: 4px;
+        top: -6px;
+    }
+
     .nav-text {
         display: none;
     }
