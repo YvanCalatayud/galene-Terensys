@@ -74,7 +74,9 @@
 }
 
 .user-logout {
-    float: right;
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
     text-align: center;
 }
 
@@ -611,10 +613,17 @@ textarea.form-reply {
 
 .login-box {
     width: 20em;
-    padding: 1em;
+    padding: 2em 1em;
     margin: 5em auto;
-    height: 23em;
+    border-radius: 6px;
+    height: fit-content;
     background: #fcfcfc;
+}
+
+.login-box #loginform {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .login-box .connect {
