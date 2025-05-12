@@ -663,11 +663,24 @@ textarea.form-reply {
 }
 
 .nav-cancel, .muted, .nav-cancel label, .muted label {
-    color: #FC5757
+    color: #E0DED9;
+}
+
+.muted .fa-camera::after {
+    position: absolute;
+    content: '|';
+    color: #E0DED9;
+    font-weight: 100;
+    font-size: 56px;
+    left: 18px;
+    bottom: 3px;
+    line-height: 100%;
+    text-shadow: -3px 0px 0px #004554;
+    transform: rotate(310deg);
 }
 
 .nav-cancel:hover, .muted:hover, .nav-cancel label:hover, .muted label:hover {
-    color: #ca2525
+    color: #E0DED9
 }
 
 .nav-button {
