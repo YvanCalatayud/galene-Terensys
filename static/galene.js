@@ -647,9 +647,9 @@ document.getElementById('showPswBtn').onclick = function(e) {
     setVisibility('passwordform', !currentlyVisible);
 
     if (currentlyVisible) {
-        button.textContent = 'I am admin';
+        button.textContent = 'Se connecter en tant qu\'admin';
     } else {
-        button.textContent = 'Hide admin login';
+        button.textContent = 'Cacher le login admin';
     }
 };
 

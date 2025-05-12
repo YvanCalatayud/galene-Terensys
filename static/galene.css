@@ -167,6 +167,15 @@
     transition-duration: 0.4s;
 }
 
+.btn-small {
+    color: #004554;
+    cursor: pointer;
+}
+
+.btn-small:hover {
+    text-decoration: underline;
+}
+
 .btn-default:hover {
     color: #fff;
     background-color: #545b62;
