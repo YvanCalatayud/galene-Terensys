@@ -662,6 +662,10 @@ textarea.form-reply {
     line-height: 1.1;
 }
 
+.camerabutton, .mutebutton {
+    color: #34C759;
+}
+
 .nav-link span {
     display: block;
 }
@@ -697,8 +701,12 @@ textarea.form-reply {
     transform: rotate(310deg);
 }
 
-.nav-cancel:hover, .muted:hover, .nav-cancel label:hover, .muted label:hover {
-    color: #E0DED9
+.muted:hover .fa-camera::after {
+    color: #aeaca7;
+}
+
+.nav-cancel:hover, .muted:hover, .muted:hover .fa-camera::after, .nav-cancel label:hover, .muted label:hover {
+    color: #aeaca7;
 }
 
 .nav-button {
