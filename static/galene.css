@@ -1476,3 +1476,8 @@ header .collapse:hover {
 .toastify.info .toast-close {
     color: #000;
 }
+
+
+#recordbutton {
+    display: none;
+}

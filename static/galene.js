@@ -278,6 +278,7 @@ function reflectSettings() {
         store = true;
     }
 
+    settings.displayAll = true;
     if(settings.hasOwnProperty('displayAll')) {
         getInputElement('displayallbox').checked = settings.displayAll;
     } else {
@@ -686,6 +687,10 @@ function setButtonsVisibility() {
     setVisibility('simulcastform', canPresent);
 
     setVisibility('collapse-video', mediacount && mobilelayout);
+
+    if(permissions.indexOf('op') >= 0) {
+        document.getElementById('recordbutton').style.display = 'inline-block';
+    }
 }
 
 /**
@@ -2169,12 +2174,6 @@ async function setMedia(c, mirror, video) {
         peersdiv.appendChild(div);
     }
 
-    if(c.label == "microphone") {
-        div.style.display = "none";
-        div.style.width = "0px";
-        div.style.height = "0px"
-    }
-
     showHideMedia(c, div)
 
     let media = /** @type {HTMLVideoElement} */
@@ -2222,9 +2221,7 @@ async function setMedia(c, mirror, video) {
     setMediaStatus(c);
 
     
-    if(c.label !== "microphone") {
-        showVideo();
-    }
+    showVideo();
     
     resizePeers();
 }
@@ -4604,6 +4601,26 @@ async function start() {
         document.getElementById('username').focus()
     }
     setViewportHeight();
+}
+
+let isRecord = false;
+
+document.getElementById('recordbutton').onclick = function(e) {
+    e.preventDefault();
+    let button = document.getElementById('recordbutton');
+    if(!isRecord){
+        button.classList.remove('btn-success');
+        button.classList.add('btn-cancel')
+        serverConnection.groupAction('record');
+        button.innerHTML = 'Stop Recording'
+        isRecord = true;
+    } else {
+        button.classList.add('btn-success');
+        button.classList.remove('btn-cancel')
+        serverConnection.groupAction('unrecord');
+        isRecord = false;
+        button.innerHTML = 'Start Record'
+    }
 }
 
 start();
