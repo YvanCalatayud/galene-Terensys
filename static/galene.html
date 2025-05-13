@@ -210,58 +210,64 @@
 
           </fieldset>
         </div>
+        <div id="collapse-container">
+          <legend>
+            <div id="collapseoptionsbtn">Options avancées <i class="fa-solid fa-angle-down"></i></div>
+          </legend>
+          
+          <div id="advancedoptions">
+            <fieldset>
+              <legend>Other Settings</legend>
 
-        <fieldset>
-          <legend>Other Settings</legend>
+              <form id="filterform">
+                <label for="filterselect" class="sidenav-label-first">Filter:</label>
+                <select id="filterselect" class="select select-inline">
+                  <option value="" selected>none</option>
+                </select>
+              </form>
 
-          <form id="filterform">
-            <label for="filterselect" class="sidenav-label-first">Filter:</label>
-            <select id="filterselect" class="select select-inline">
-              <option value="" selected>none</option>
-            </select>
-          </form>
+              <form id="sendform">
+                <label for="sendselect" class="sidenav-label-first">Send:</label>
+                <select id="sendselect" class="select select-inline">
+                  <option value="lowest">lowest</option>
+                  <option value="low">low</option>
+                  <option value="normal" selected>normal</option>
+                  <option value="unlimited">unlimited</option>
+                </select>
+              </form>
 
-          <form id="sendform">
-            <label for="sendselect" class="sidenav-label-first">Send:</label>
-            <select id="sendselect" class="select select-inline">
-              <option value="lowest">lowest</option>
-              <option value="low">low</option>
-              <option value="normal" selected>normal</option>
-              <option value="unlimited">unlimited</option>
-            </select>
-          </form>
+              <form id="simulcastform">
+                <label for="simulcastselect" class="sidenav-label-first">Simulcast:</label>
+                <select id="simulcastselect" class="select select-inline">
+                  <option value="off">off</option>
+                  <option value="auto" selected>auto</option>
+                  <option value="on">on</option>
+                </select>
+              </form>
 
-          <form id="simulcastform">
-            <label for="simulcastselect" class="sidenav-label-first">Simulcast:</label>
-            <select id="simulcastselect" class="select select-inline">
-              <option value="off">off</option>
-              <option value="auto" selected>auto</option>
-              <option value="on">on</option>
-            </select>
-          </form>
+              <form id="requestform">
+                <label for="requestselect" class="sidenav-label">Receive:</label>
+                <select id="requestselect" class="select select-inline">
+                  <option value="">nothing</option>
+                  <option value="audio">audio only</option>
+                  <option value="screenshare">screenshare only</option>
+                  <option value="everything-low">low quality</option>
+                  <option value="everything" selected>everything</option>
+                </select>
+              </form>
+      
+              <form>
+                <input id="activitybox" type="checkbox"/>
+                <label for="activitybox">Activity detection</label>
+              </form>
 
-          <form id="requestform">
-            <label for="requestselect" class="sidenav-label">Receive:</label>
-            <select id="requestselect" class="select select-inline">
-              <option value="">nothing</option>
-              <option value="audio">audio only</option>
-              <option value="screenshare">screenshare only</option>
-              <option value="everything-low">low quality</option>
-              <option value="everything" selected>everything</option>
-            </select>
-          </form>
-  
-          <form>
-            <input id="activitybox" type="checkbox"/>
-            <label for="activitybox">Activity detection</label>
-          </form>
-
-          <form>
-            <input id="displayallbox" type="checkbox"/>
-            <label for="displayallbox">Display audio-only users</label>
-          </form>
-        </fieldset>
-
+              <form>
+                <input id="displayallbox" type="checkbox"/>
+                <label for="displayallbox">Display audio-only users</label>
+              </form>
+            </fieldset>
+          </div>
+        </div>
         <div class="user-logout">
           <a id="disconnectbutton">
             <span class="logout-icon"><i class="fas fa-sign-out-alt"></i></span>

@@ -565,7 +565,7 @@ document.getElementById('camerabutton').onclick = async function(e) {
     const button = document.getElementById('camerabutton');
     const settings = getSettings();
 
-    console.log('allowed', settings.isAllowed)
+    // console.log('allowed', serverConnection.permissions.indexOf('present'))
 
     // modal
     if (!settings.isAllowed) {
@@ -4677,5 +4677,22 @@ document.getElementById('btn-modal').onclick = async function(e) {
         modal.style.display = 'none';
     }, 400);
 }
+
+document.getElementById('collapseoptionsbtn').onclick = function(e) {
+    let menu = document.getElementById('collapseoptionsbtn');
+    menu.classList.toggle('active');
+    if(menu.classList.contains('active')) {
+        menu.innerHTML = menu.innerHTML.replace('<i class="fa-solid fa-angle-down"></i>','<i class="fa-solid fa-angle-up"></i>');
+    } else {
+        menu.innerHTML = menu.innerHTML.replace('<i class="fa-solid fa-angle-up"></i>','<i class="fa-solid fa-angle-down"></i>');
+    }
+    let content = document.getElementById('advancedoptions')
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+}
+
 
 start();
