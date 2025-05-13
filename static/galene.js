@@ -4623,4 +4623,22 @@ document.getElementById('recordbutton').onclick = function(e) {
     }
 }
 
+document.getElementById('collapseoptionsbtn').onclick = function(e) {
+    let menu = document.getElementById('collapseoptionsbtn');
+    menu.classList.toggle('active');
+    if(menu.classList.contains('active')) {
+        menu.innerHTML = menu.innerHTML.replace('<i class="fa-solid fa-angle-down"></i>','<i class="fa-solid fa-angle-up"></i>');
+    } else {
+        menu.innerHTML = menu.innerHTML.replace('<i class="fa-solid fa-angle-up"></i>','<i class="fa-solid fa-angle-down"></i>');
+    }
+    let content = document.getElementById('advancedoptions')
+    console.log(content)
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+}
+
+
 start();

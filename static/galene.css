@@ -1481,3 +1481,22 @@ header .collapse:hover {
 #recordbutton {
     display: none;
 }
+
+#collapse-container{
+    margin-top: 12px;
+    border: lightgray solid 1px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#collapseoptionsbtn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#advancedoptions {
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    max-height: 0;
+}
