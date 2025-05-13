@@ -4632,7 +4632,6 @@ document.getElementById('collapseoptionsbtn').onclick = function(e) {
         menu.innerHTML = menu.innerHTML.replace('<i class="fa-solid fa-angle-up"></i>','<i class="fa-solid fa-angle-down"></i>');
     }
     let content = document.getElementById('advancedoptions')
-    console.log(content)
     if (content.style.maxHeight){
       content.style.maxHeight = null;
     } else {
