@@ -68,6 +68,7 @@ let probingState = null;
  * @typedef {Object} settings - the type of stored settings
  * @property {boolean} [localMute]
  * @property {string} [video]
+ * @property {boolean} [isAllowed]
  * @property {string} [audio]
  * @property {string} [simulcast]
  * @property {string} [send]
@@ -207,6 +208,8 @@ function reflectSettings() {
     let store = false;
 
     settings.localMute = true;
+    settings.isAllowed = false;
+    
     store = true;
     setLocalMute(settings.localMute);
 
@@ -558,7 +561,46 @@ addEventListener('orientationchange', setViewportHeight);
 
 document.getElementById('camerabutton').onclick = async function(e) {
     e.preventDefault();
+    
     const button = document.getElementById('camerabutton');
+    const settings = getSettings();
+
+    console.log('allowed', settings.isAllowed)
+
+    // modal
+    if (!settings.isAllowed) {
+        try {
+            const perm = navigator.mediaDevices.getUserMedia({ video: true });
+    
+            if (!(perm instanceof MediaStream)) {
+                const modal = document.getElementById('permission');
+                const message = document.getElementById('permission-modal');
+                modal.style.display = "flex";
+                setTimeout(() => {
+                    message.classList.add('shown');
+                })
+            }
+
+            const perme = await navigator.mediaDevices.getUserMedia({ video: true })
+
+            if (perme instanceof MediaStream) {
+                updateSettings({isAllowed: true});
+                console.log('gg ez');
+            }
+        } catch(error) {
+            console.log('Acces non autorisé');
+    
+            const modal = document.getElementById('permission');
+            const message = document.getElementById('permission-modal');
+            modal.style.display = "flex";
+            setTimeout(() => {
+                message.classList.add('shown');
+            })
+    
+            updateSettings({isAllowed: false})
+        }
+    }
+
     const camStream = findUpMedia('camera');
 
     if (camStream) {
@@ -3002,6 +3044,7 @@ async function gotJoined(kind, group, perms, status, data, error, message) {
             } finally {
                 button.disabled = false;
             }
+            
         } /* else {
             displayMessage(
                 "Press Enable to enable your camera or microphone"
@@ -4621,6 +4664,18 @@ document.getElementById('recordbutton').onclick = function(e) {
         isRecord = false;
         button.innerHTML = 'Start Record'
     }
+}
+
+document.getElementById('btn-modal').onclick = async function(e) {
+    e.preventDefault();
+
+    const modal = document.getElementById('permission');
+    const message = document.getElementById('permission-modal');
+    
+    message.classList.remove('shown');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 400);
 }
 
 start();

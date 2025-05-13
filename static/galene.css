@@ -662,8 +662,12 @@ textarea.form-reply {
     line-height: 1.1;
 }
 
-.camerabutton, .mutebutton {
-    color: #34C759;
+.camerabutton, .mutebutton, .camerabutton label, .mutebutton label {
+    color: #34C759 !important;
+}
+
+.camerabutton:hover, .mutebutton:hover, .camerabutton label:hover, .mutebutton label:hover {
+    color: #52e577 !important;
 }
 
 .nav-link span {
@@ -685,7 +689,7 @@ textarea.form-reply {
 }
 
 .nav-cancel, .muted, .nav-cancel label, .muted label {
-    color: #E0DED9;
+    color: #E0DED9 !important;
 }
 
 .muted .fa-camera::after {
@@ -702,11 +706,11 @@ textarea.form-reply {
 }
 
 .muted:hover .fa-camera::after {
-    color: #aeaca7;
+    color: #aeaca7 !important;
 }
 
 .nav-cancel:hover, .muted:hover, .muted:hover .fa-camera::after, .nav-cancel label:hover, .muted label:hover {
-    color: #aeaca7;
+    color: #aeaca7 !important;
 }
 
 .nav-button {
@@ -1480,4 +1484,72 @@ header .collapse:hover {
 
 #recordbutton {
     display: none;
+}
+
+#permission {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: #00000033;
+    z-index: 2000;
+}
+
+#permission-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 24px;
+
+    padding: 24px;
+
+    border-radius: 24px;
+    background-color: #E0DED9;
+    box-shadow: 0 6px 24px #00000033;
+}
+
+#permission-modal p {
+    color: #000;
+}
+
+.hidden {
+    opacity: 0;
+
+    transform: scale(0) translateY(-200px);
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(.85,-0.4,.2,1.5);
+}
+
+.shown {
+    opacity: 1;
+
+    transform: scale(1) translateY(0);
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(.85,-0.4,.2,1.5);
+}
+
+#btn-modal {
+    padding: 12px 24px;
+    width: fit-content;
+
+    outline: none;
+    border: none;
+    border-radius: 12px;
+    background-color: #1c1c1b;
+    
+    font-size: 1em;
+    color: #E0DED9;
+
+    cursor: pointer;
+}
+
+#btn-modal:hover {
+    background-color: #3a3a39;
 }
