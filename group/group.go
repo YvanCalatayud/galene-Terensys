@@ -1104,6 +1104,7 @@ type Status struct {
 	Locked            bool   `json:"locked,omitempty"`
 	ClientCount       *int   `json:"clientCount,omitempty"`
 	CanChangePassword bool   `json:"canChangePassword,omitempty"`
+	CustomUi          string `json:"customUi,omitempty"`
 }
 
 // Status returns a group's status.
@@ -1151,6 +1152,7 @@ func (g *Group) Status(authentified bool, base *url.URL) Status {
 		AuthServer:  desc.AuthServer,
 		AuthPortal:  desc.AuthPortal,
 		Description: desc.Description,
+		CustomUi:    desc.CustomUi,
 	}
 
 	if authentified || desc.Public {

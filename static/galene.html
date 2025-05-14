@@ -36,7 +36,7 @@
               </div>
 
               <ul class="nav-menu">
-                <!-- <li>
+                <li>
                   <button id="presentbutton" class="invisible btn btn-success">
                     <i class="fas fa-play" aria-hidden="true"></i><span class="nav-text"> Enable</span>
                   </button>
@@ -45,18 +45,9 @@
                   <button id="unpresentbutton" class="invisible btn btn-cancel">
                     <i class="fas fa-stop" aria-hidden="true"></i><span class="nav-text"> Disable</span>
                   </button>
-                </li> -->
-                <li>
-                  <button class="btn btn-success" id="recordbutton">Start Record</button>
                 </li>
                 <li>
-                  <div id="camerabutton" class="nav-link nav-button muted camerabutton">
-                    <span><i class="fas fa-camera"></i></span>
-                    <label>Camera</label>
-                  </div>
-                </li>
-                <li>
-                  <div id="mutebutton" class="nav-link nav-button mutebutton">
+                  <div id="mutebutton" class="nav-link nav-button">
                     <span><i class="fas fa-microphone-slash" aria-hidden="true"></i></span>
                     <label>Mute</label>
                   </div>
@@ -115,20 +106,16 @@
                 <div class="login-box">
                   <form id="loginform" class="loginform">
                     <div id="userform">
-                      <label for="username">Nom d'utilisateur</label>
+                      <label for="username">Username</label>
                       <input id="username" type="text" name="username"
                              autocomplete="username" class="form-control"/>
                     </div>
-                    <div id="passwordform" class="invisible">
-                      <label for="password">Mot de passe</label>
+                    <div id="passwordform">
+                      <label for="password">Password</label>
                       <input id="password" type="password" name="password"
-                             autocomplete="current-password" class="form-control" placeholder="Uniquement pour l'admin"/>
+                             autocomplete="current-password" class="form-control"/>
                     </div>
-                    <div id="showPswBtn-container">
-                      <div class="btn-small" id="showPswBtn">Se connecter en tant qu'admin</div>
-                    </div>
-                    
-                    <!-- <label>Enable at start:</label>
+                    <label>Enable at start:</label>
                     <div class="present-switch">
                       <p class="switch-radio">
                         <input id="presentoff" type="radio" name="presentradio" value="" checked/>
@@ -142,10 +129,10 @@
                         <input id="presentboth" type="radio" name="presentradio" value="both"/>
                         <label for="presentboth">Camera and microphone</label>
                       </p>
-                    </div> -->
+                    </div>
                     <div class="clear"></div>
                     <div class="connect">
-                      <input id="connectbutton" type="submit" class="btn btn-blue" value="Se connecter"/>
+                      <input id="connectbutton" type="submit" class="btn btn-blue" value="Connect"/>
                     </div>
                   </form>
                   <div class="clear"></div>
@@ -173,9 +160,15 @@
               <span id="permspan"></span>
               <span id="chpwspan" class="invisible"><a id="change-password">Change password</a></span>
             </div>
+            <div class="user-logout">
+              <a id="disconnectbutton">
+                <span class="logout-icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span class="logout-text">Logout</span>
+              </a>
+            </div>
           </div>
         </div>
-        <div id="mediaoptions">
+        <div id="mediaoptions" class="invisible">
           <fieldset>
             <legend>Media Options</legend>
             <label for="videoselect" class="sidenav-label-first">Camera:</label>
@@ -210,70 +203,57 @@
 
           </fieldset>
         </div>
-        <div id="collapse-container">
-          <legend>
-            <div id="collapseoptionsbtn">Options avancées <i class="fa-solid fa-angle-down"></i></div>
-          </legend>
-          
-          <div id="advancedoptions">
-            <fieldset>
-              <legend>Other Settings</legend>
 
-              <form id="filterform">
-                <label for="filterselect" class="sidenav-label-first">Filter:</label>
-                <select id="filterselect" class="select select-inline">
-                  <option value="" selected>none</option>
-                </select>
-              </form>
+        <fieldset>
+          <legend>Other Settings</legend>
 
-              <form id="sendform">
-                <label for="sendselect" class="sidenav-label-first">Send:</label>
-                <select id="sendselect" class="select select-inline">
-                  <option value="lowest">lowest</option>
-                  <option value="low">low</option>
-                  <option value="normal" selected>normal</option>
-                  <option value="unlimited">unlimited</option>
-                </select>
-              </form>
+          <form id="filterform">
+            <label for="filterselect" class="sidenav-label-first">Filter:</label>
+            <select id="filterselect" class="select select-inline">
+              <option value="" selected>none</option>
+            </select>
+          </form>
 
-              <form id="simulcastform">
-                <label for="simulcastselect" class="sidenav-label-first">Simulcast:</label>
-                <select id="simulcastselect" class="select select-inline">
-                  <option value="off">off</option>
-                  <option value="auto" selected>auto</option>
-                  <option value="on">on</option>
-                </select>
-              </form>
+          <form id="sendform">
+            <label for="sendselect" class="sidenav-label-first">Send:</label>
+            <select id="sendselect" class="select select-inline">
+              <option value="lowest">lowest</option>
+              <option value="low">low</option>
+              <option value="normal" selected>normal</option>
+              <option value="unlimited">unlimited</option>
+            </select>
+          </form>
 
-              <form id="requestform">
-                <label for="requestselect" class="sidenav-label">Receive:</label>
-                <select id="requestselect" class="select select-inline">
-                  <option value="">nothing</option>
-                  <option value="audio">audio only</option>
-                  <option value="screenshare">screenshare only</option>
-                  <option value="everything-low">low quality</option>
-                  <option value="everything" selected>everything</option>
-                </select>
-              </form>
-      
-              <form>
-                <input id="activitybox" type="checkbox"/>
-                <label for="activitybox">Activity detection</label>
-              </form>
+          <form id="simulcastform">
+            <label for="simulcastselect" class="sidenav-label-first">Simulcast:</label>
+            <select id="simulcastselect" class="select select-inline">
+              <option value="off">off</option>
+              <option value="auto" selected>auto</option>
+              <option value="on">on</option>
+            </select>
+          </form>
 
-              <form>
-                <input id="displayallbox" type="checkbox"/>
-                <label for="displayallbox">Display audio-only users</label>
-              </form>
-            </fieldset>
-          </div>
-        </div>
-        <div class="user-logout">
-          <a id="disconnectbutton">
-            <span class="logout-icon"><i class="fas fa-sign-out-alt"></i></span>
-            <span class="logout-text">Logout</span>
-          </a>
-        </div>
+          <form id="requestform">
+            <label for="requestselect" class="sidenav-label">Receive:</label>
+            <select id="requestselect" class="select select-inline">
+              <option value="">nothing</option>
+              <option value="audio">audio only</option>
+              <option value="screenshare">screenshare only</option>
+              <option value="everything-low">low quality</option>
+              <option value="everything" selected>everything</option>
+            </select>
+          </form>
+  
+          <form>
+            <input id="activitybox" type="checkbox"/>
+            <label for="activitybox">Activity detection</label>
+          </form>
+
+          <form>
+            <input id="displayallbox" type="checkbox"/>
+            <label for="displayallbox">Display audio-only users</label>
+          </form>
+        </fieldset>
       </div>
     </div>
 
@@ -307,13 +287,6 @@
       </div>
     </div>
 
-    <div id="permission">
-      <div id="permission-modal" class="hidden">
-        <p id="modal-text"></p>
-        <button id="btn-modal">Close</button>
-      </div>
-    </div>
-
     <dialog id="invite-dialog">
       <form method="dialog">
         <label for="invite-username">Username (optional):</label>
@@ -333,6 +306,8 @@
     <script src="/protocol.js" defer></script>
     <script src="/third-party/toastify/toastify.js" defer></script>
     <script src="/third-party/contextual/contextual.js" defer></script>
-    <script src="/galene.js" defer></script>
+    <!-- <script src="/galene.js" defer></script> -->
+    <script src="/loadJs.js" defer></script>
+
   </body>
 </html>

@@ -68,6 +68,7 @@ let probingState = null;
  * @typedef {Object} settings - the type of stored settings
  * @property {boolean} [localMute]
  * @property {string} [video]
+ * @property {boolean} [isAllowed]
  * @property {string} [audio]
  * @property {string} [simulcast]
  * @property {string} [send]
@@ -206,6 +207,10 @@ function reflectSettings() {
     let settings = getSettings();
     let store = false;
 
+    settings.localMute = true;
+    settings.isAllowed = false;
+    
+    store = true;
     setLocalMute(settings.localMute);
 
     let videoselect = getSelectElement('videoselect');
@@ -276,6 +281,7 @@ function reflectSettings() {
         store = true;
     }
 
+    settings.displayAll = true;
     if(settings.hasOwnProperty('displayAll')) {
         getInputElement('displayallbox').checked = settings.displayAll;
     } else {
@@ -317,11 +323,21 @@ function isMobileLayout() {
  */
 function hideVideo(force) {
     let mediadiv = document.getElementById('peers');
-    if(mediadiv.childElementCount > 0 && !force)
+    let visiblePeers = Array.from(mediadiv.children).filter(el => {
+        return el instanceof HTMLElement &&
+               el.classList.contains('peer') &&
+               el.style.display !== 'none' &&
+               el.offsetWidth > 0 &&
+               el.offsetHeight > 0;
+    });
+
+    if(visiblePeers.length > 0 && !force)
         return;
+
     setVisibility('video-container', false);
     scheduleReconsiderDownRate();
 }
+
 
 /**
  * Show the video pane.
@@ -543,28 +559,123 @@ function setViewportHeight() {
 addEventListener('resize', setViewportHeight);
 addEventListener('orientationchange', setViewportHeight);
 
-getButtonElement('presentbutton').onclick = async function(e) {
+let cameraBusy = false;
+
+document.getElementById('camerabutton').onclick = async function (e) {
     e.preventDefault();
-    let button = this;
-    if(!(button instanceof HTMLButtonElement))
-        throw new Error('Unexpected type for this.');
-    // there's a potential race condition here: the user might click the
-    // button a second time before the stream is set up and the button hidden.
-    button.disabled = true;
-    try {
-        let id = findUpMedia('camera');
-        if(!id)
-            await addLocalMedia();
-    } finally {
-        button.disabled = false;
+
+    if (cameraBusy) return;
+    cameraBusy = true;
+
+    const button = document.getElementById('camerabutton');
+    const settings = getSettings();
+
+    // console.log('allowed', serverConnection.permissions.indexOf('present'))
+
+    // modal
+    if (!settings.isAllowed) {
+        try {
+            const perm = navigator.mediaDevices.getUserMedia({ video: true });
+    
+            if (!(perm instanceof MediaStream)) {
+                const modal = document.getElementById('permission');
+                const message = document.getElementById('permission-modal');
+                modal.style.display = "flex";
+                setTimeout(() => {
+                    message.classList.add('shown');
+                })
+            }
+
+            const perme = await navigator.mediaDevices.getUserMedia({ video: true })
+
+            if (perme instanceof MediaStream) {
+                updateSettings({isAllowed: true});
+                console.log('gg ez');
+            }
+        } catch(error) {
+            console.log('Acces non autorisé');
+    
+            const modal = document.getElementById('permission');
+            const message = document.getElementById('permission-modal');
+            modal.style.display = "flex";
+            setTimeout(() => {
+                message.classList.add('shown');
+            })
+    
+            updateSettings({isAllowed: false})
+        }
     }
+
+    const camStream = findUpMedia('camera');
+
+    if (camStream) {
+        closeUpMedia('camera');
+        button.classList.add('muted');
+    } else {
+        await addCameraMedia(button);
+    }
+    
+    cameraBusy = false;
 };
 
-getButtonElement('unpresentbutton').onclick = function(e) {
-    e.preventDefault();
-    closeUpMedia('camera');
-    resizePeers();
-};
+async function addCameraMedia(cameraButton) {
+    let settings = getSettings();
+    let video = settings.video ? {deviceId: settings.video} : false;
+
+    if (video) {
+        let resolution = settings.resolution;
+        if (resolution) {
+            video.width = { ideal: resolution[0] };
+            video.height = { ideal: resolution[1] };
+        } else if (settings.blackboardMode) {
+            video.width = { min: 640, ideal: 1920 };
+            video.height = { min: 400, ideal: 1080 };
+        } else {
+            video.aspectRatio = { ideal: 4 / 3 };
+        }
+    }
+
+    let constraints = { audio: false, video: video };
+    let stream;
+
+    try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (e) {
+        displayError(e);
+        return;
+    }
+
+    cameraButton.classList.remove('muted');
+    let c = newUpStream();
+    c.label = 'camera';
+
+    await setUpStream(c, stream);
+    await setMedia(c, settings.mirrorView);
+}
+
+
+// getButtonElement('presentbutton').onclick = async function(e) {
+//     e.preventDefault();
+//     let button = this;
+//     if(!(button instanceof HTMLButtonElement))
+//         throw new Error('Unexpected type for this.');
+//     // there's a potential race condition here: the user might click the
+//     // button a second time before the stream is set up and the button hidden.
+//     button.disabled = true;
+//     try {
+//         let id = findUpMedia('camera');
+//         if(!id)
+//             await addLocalMedia();
+//     } finally {
+//         button.disabled = false;
+//     }
+// };
+
+// getButtonElement('unpresentbutton').onclick = function(e) {
+//     e.preventDefault();
+//     closeUpMedia('camera');
+//     resizePeers();
+// };
 
 /**
  * @param {string} id
@@ -577,6 +688,20 @@ function setVisibility(id, visible) {
     else
         elt.classList.add('invisible');
 }
+
+document.getElementById('showPswBtn').onclick = function(e) {
+    const elt = document.getElementById('passwordform');
+    const button = document.getElementById('showPswBtn');
+    const currentlyVisible = !elt.classList.contains('invisible');
+    
+    setVisibility('passwordform', !currentlyVisible);
+
+    if (currentlyVisible) {
+        button.textContent = 'Se connecter en tant qu\'admin';
+    } else {
+        button.textContent = 'Cacher le login admin';
+    }
+};
 
 /**
  * Shows and hides various UI elements depending on the protocol state.
@@ -593,24 +718,28 @@ function setButtonsVisibility() {
         ('mediaDevices' in navigator) &&
         ('getDisplayMedia' in navigator.mediaDevices) &&
         permissions.indexOf('present') >= 0;
-    let local = !!findUpMedia('camera');
+    // let local = !!findUpMedia('camera');
     let mediacount = document.getElementById('peers').childElementCount;
     let mobilelayout = isMobileLayout();
 
     // don't allow multiple presentations
-    setVisibility('presentbutton', canPresent && !local);
-    setVisibility('unpresentbutton', local);
+    // setVisibility('presentbutton', canPresent && !local);
+    // setVisibility('unpresentbutton', local);
 
     setVisibility('mutebutton', !connected || canPresent);
 
     // allow multiple shared documents
     setVisibility('sharebutton', canShare);
 
-    setVisibility('mediaoptions', canPresent);
+    setVisibility('mediaoptions', true);
     setVisibility('sendform', canPresent);
     setVisibility('simulcastform', canPresent);
 
     setVisibility('collapse-video', mediacount && mobilelayout);
+
+    if(permissions.indexOf('op') >= 0) {
+        document.getElementById('recordbutton').style.display = 'inline-block';
+    }
 }
 
 /**
@@ -685,16 +814,57 @@ getInputElement('hqaudiobox').onchange = function(e) {
     replaceCameraStream();
 };
 
-document.getElementById('mutebutton').onclick = function(e) {
+document.getElementById('mutebutton').onclick = async function(e) {
     e.preventDefault();
+
     let localMute = getSettings().localMute;
-    if (localMute && !findUpMedia('camera')) {
-        displayMessage('Please use Enable to enable your camera or microphone.');
-    } else {
-        localMute = !localMute;
+    localMute = !localMute;
+
+    // Active/désactive le micro en fonction de localMute
+    if (localMute) {
+        closeUpMedia('microphone');
         setLocalMute(localMute, true);
+    } else {
+        await addMicrophoneMedia(localMute);
     }
 };
+
+
+
+
+
+async function addMicrophoneMedia(localMute) {
+    let settings = getSettings();
+    let audio = settings.audio ? {deviceId: settings.audio} : false;
+
+    if(audio) {
+        if(!settings.preprocessing) {
+            audio.echoCancellation = false;
+            audio.noiseSuppression = false;
+            audio.autoGainControl = false;
+        }
+    }
+
+    let constraints = { audio: audio, video: false };
+    let stream = null;
+
+    try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (e) {
+        displayError(e);
+        return;
+    }
+
+    // Mets à jour l'icône et l’état
+    setLocalMute(localMute, true);
+    let c = newUpStream();
+    c.label = 'microphone';
+
+    await setUpStream(c, stream);
+    await setMedia(c, false);
+}
+
+
 
 document.getElementById('sharebutton').onclick = function(e) {
     e.preventDefault();
@@ -1537,7 +1707,7 @@ async function setUpStream(c, stream) {
      */
     function addUpTrack(t) {
         let settings = getSettings();
-        if(c.label === 'camera') {
+        // if(c.label === 'camera') {
             if(t.kind == 'audio') {
                 if(settings.localMute)
                     t.enabled = false;
@@ -1546,7 +1716,7 @@ async function setUpStream(c, stream) {
                     t.contentHint = 'detail';
                 }
             }
-        }
+        // }
         t.onended = e => {
             stream.onaddtrack = null;
             stream.onremovetrack = null;
@@ -1915,14 +2085,14 @@ function muteLocalTracks(mute) {
         return;
     for(let id in serverConnection.up) {
         let c = serverConnection.up[id];
-        if(c.label === 'camera') {
+        // if(c.label === 'camera') {
             let stream = c.stream;
             stream.getTracks().forEach(t => {
-                if(t.kind === 'audio') {
+                if(t.kind === 'audio') {    
                     t.enabled = !mute;
                 }
             });
-        }
+        // }
     }
 }
 
@@ -2099,7 +2269,9 @@ async function setMedia(c, mirror, video) {
     setLabel(c);
     setMediaStatus(c);
 
+    
     showVideo();
+    
     resizePeers();
 }
 
@@ -2237,6 +2409,7 @@ function registerControlHandlers(localId, media, container) {
                 if(!c)
                     throw new Error('Closing unknown stream');
                 c.close();
+                document.getElementById('camerabutton').classList.add('muted');
             } catch(e) {
                 console.error(e);
                 displayError(e);
@@ -2382,15 +2555,21 @@ function resizePeers() {
     // Window resize can call this method too early
     if (!serverConnection)
         return;
-    let count =
+    /* let count =
         Object.keys(serverConnection.up).length +
-        Object.keys(serverConnection.down).length;
+        Object.keys(serverConnection.down).length; */
     let peers = document.getElementById('peers');
+    let container = document.getElementById("video-container");
+    const visiblePeers = Array.from(peers.children).filter(p =>
+        p.classList.contains('peer') &&
+        window.getComputedStyle(p).display !== 'none'
+    );
+    let count = visiblePeers.length;
     let columns = Math.ceil(Math.sqrt(count));
     if (!count)
         // No video, nothing to resize.
         return;
-    let container = document.getElementById("video-container");
+    
     // Peers div has total padding of 40px, we remove 40 on offsetHeight
     // Grid has row-gap of 5px
     let rows = Math.ceil(count / columns);
@@ -2873,11 +3052,12 @@ async function gotJoined(kind, group, perms, status, data, error, message) {
             } finally {
                 button.disabled = false;
             }
-        } else {
+            
+        } /* else {
             displayMessage(
                 "Press Enable to enable your camera or microphone"
             );
-        }
+        } */
     }
 }
 
@@ -4317,13 +4497,14 @@ document.getElementById('loginform').onsubmit = async function(e) {
 
     setVisibility('passwordform', true);
 
-    if(getInputElement('presentboth').checked)
-        presentRequested = 'both';
-    else if(getInputElement('presentmike').checked)
-        presentRequested = 'mike';
-    else
-        presentRequested = null;
-    getInputElement('presentoff').checked = true;
+    // if(getInputElement('presentboth').checked)
+    //     presentRequested = 'both';
+    // else if(getInputElement('presentmike').checked)
+    //     presentRequested = 'mike';
+    // else
+    //     presentRequested = null;
+    // getInputElement('presentoff').checked = true;
+    presentRequested = null;
 
     // Connect to the server, gotConnected will join.
     form.active = false;
@@ -4472,5 +4653,54 @@ async function start() {
     }
     setViewportHeight();
 }
+
+let isRecord = false;
+
+document.getElementById('recordbutton').onclick = function(e) {
+    e.preventDefault();
+    let button = document.getElementById('recordbutton');
+    if(!isRecord){
+        button.classList.remove('btn-success');
+        button.classList.add('btn-cancel')
+        serverConnection.groupAction('record');
+        button.innerHTML = 'Stop Recording'
+        isRecord = true;
+    } else {
+        button.classList.add('btn-success');
+        button.classList.remove('btn-cancel')
+        serverConnection.groupAction('unrecord');
+        isRecord = false;
+        button.innerHTML = 'Start Record'
+    }
+}
+
+document.getElementById('btn-modal').onclick = async function(e) {
+    e.preventDefault();
+
+    const modal = document.getElementById('permission');
+    const message = document.getElementById('permission-modal');
+    
+    message.classList.remove('shown');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 400);
+}
+
+document.getElementById('collapseoptionsbtn').onclick = function(e) {
+    let menu = document.getElementById('collapseoptionsbtn');
+    menu.classList.toggle('active');
+    if(menu.classList.contains('active')) {
+        menu.innerHTML = menu.innerHTML.replace('<i class="fa-solid fa-angle-down"></i>','<i class="fa-solid fa-angle-up"></i>');
+    } else {
+        menu.innerHTML = menu.innerHTML.replace('<i class="fa-solid fa-angle-up"></i>','<i class="fa-solid fa-angle-down"></i>');
+    }
+    let content = document.getElementById('advancedoptions')
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+}
+
 
 start();

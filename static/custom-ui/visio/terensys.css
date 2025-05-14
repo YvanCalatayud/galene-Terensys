@@ -74,7 +74,9 @@
 }
 
 .user-logout {
-    float: right;
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
     text-align: center;
 }
 
@@ -102,7 +104,7 @@
 #chpwspan a {
     padding: 4px 0;
     font-size: 0.9em;
-    color: #e4157e;
+    color: #FC5757;
 }
 
 #chpwspan.invisible {
@@ -112,13 +114,13 @@
 .sidenav .user-logout a {
     font-size: 1em;
     padding: 7px 0 0;
-    color: #e4157e;
+    color: #FC5757;
     cursor: pointer;
     line-height: .7;
 }
 
 .sidenav .user-logout a:hover {
-    color: #ab0659;
+    color: #ca2525;
 }
 
 .navbar, .navbar .container, .navbar .container-fluid, .navbar .container-lg, .navbar .container-md, .navbar .container-sm, .navbar .container-xl {
@@ -129,7 +131,7 @@
     align-items: center;
     -webkit-box-pack: justify;
     justify-content: space-between;
-    background: #610a86;
+    background: #004554;
 }
 .navbar {
     position: relative;
@@ -165,6 +167,15 @@
 
 .btn {
     transition-duration: 0.4s;
+}
+
+.btn-small {
+    color: #004554;
+    cursor: pointer;
+}
+
+.btn-small:hover {
+    text-decoration: underline;
 }
 
 .btn-default:hover {
@@ -284,7 +295,7 @@
 .users-header {
     height: 3.5rem;
     padding: 10px;
-    background: #610a86;
+    background: #004554;
     font-size: .95rem;
     font-weight: 500;
 }
@@ -602,10 +613,17 @@ textarea.form-reply {
 
 .login-box {
     width: 20em;
-    padding: 1em;
+    padding: 2em 1em;
     margin: 5em auto;
-    height: 23em;
+    border-radius: 6px;
+    height: fit-content;
     background: #fcfcfc;
+}
+
+.login-box #loginform {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .login-box .connect {
@@ -635,13 +653,21 @@ textarea.form-reply {
 
 .nav-link {
     padding: 0;
-    color: #dbd9d9;
+    color: #E0DED9;
     min-width: 30px;
     display: block;
     text-align: center;
     margin: 0 10px;
     position: relative;
     line-height: 1.1;
+}
+
+.camerabutton, .mutebutton, .camerabutton label, .mutebutton label {
+    color: #34C759 !important;
+}
+
+.camerabutton:hover, .mutebutton:hover, .camerabutton label:hover, .mutebutton label:hover {
+    color: #52e577 !important;
 }
 
 .nav-link span {
@@ -651,23 +677,40 @@ textarea.form-reply {
 .nav-link label {
     display: block;
     cursor: pointer;
-    color: #fff;
+    color: #E0DED9;
     font-size: 55%;
 }
 
 .nav-link:hover {
-    color: #c2a4e0;
+    color: #aeaca7;
 }
 .nav-link label:hover {
-    color: #c2a4e0;
+    color: #aeaca7;
 }
 
 .nav-cancel, .muted, .nav-cancel label, .muted label {
-    color: #d03e3e
+    color: #E0DED9 !important;
 }
 
-.nav-cancel:hover, .muted:hover, .nav-cancel label:hover, .muted label:hover {
-    color: #d03e3e
+.muted .fa-camera::after {
+    position: absolute;
+    content: '|';
+    color: #E0DED9;
+    font-weight: 100;
+    font-size: 56px;
+    left: 18px;
+    bottom: 3px;
+    line-height: 100%;
+    text-shadow: -3px 0px 0px #004554;
+    transform: rotate(310deg);
+}
+
+.muted:hover .fa-camera::after {
+    color: #aeaca7 !important;
+}
+
+.nav-cancel:hover, .muted:hover, .muted:hover .fa-camera::after, .nav-cancel label:hover, .muted label:hover {
+    color: #aeaca7 !important;
 }
 
 .nav-button {
@@ -685,7 +728,7 @@ textarea.form-reply {
     margin: 0;
     font-size: 1rem;
     font-weight: 700;
-    color: #ebebeb;
+    color: #E0DED9;
     line-height: 2em;
 }
 
@@ -882,6 +925,11 @@ h1 {
     cursor: ew-resize;
 }
 
+#showPswBtn-container {
+    display: flex;
+    justify-content: end;
+}
+
 #peers {
     padding: 10px;
     display: grid;
@@ -939,7 +987,7 @@ h1 {
 }
 
 .sidenav {
-    background-color: #4d076b;
+    background-color: #004554;
     box-shadow: 0 0 24px 0 rgba(71,77,86,.1), 0 1px 0 0 rgba(71,77,86,.08);
     display: block;
     position: fixed;
@@ -959,14 +1007,14 @@ h1 {
     padding: 10px 20px;
     text-decoration: none;
     font-size: 30px;
-    color: #dbd9d9;
+    color: #E0DED9;
     display: block;
     transition: 0.3s;
     line-height: 1.0;
 }
 
 .sidenav a:hover {
-    color: #c2a4e0;
+    color: #aeaca7;
 }
 
 .sidenav .closebtn {
@@ -996,7 +1044,7 @@ h1 {
 }
 
 .sidenav-header h2{
-    color: #fff;
+    color: #E0DED9;
     padding: 10px;
     margin: 0;
     max-width: 70%;
@@ -1090,19 +1138,19 @@ header .collapse {
     text-align: center;
     cursor: pointer;
     font-size: 20px;
-    color: #dbd9d9;
+    color: #E0DED9;
     margin-right: 20px;
     margin-left: 5px;
 }
 
 header .collapse:hover {
-    color: #c2a4e0;
+    color: #aeaca7;
 }
 
 .galene-header {
     font-size: 1.3rem;
     font-weight: 900;
-    color: #dbd9d9;
+    color: #E0DED9;
     line-height: 34px;
 }
 
@@ -1212,6 +1260,12 @@ header .collapse:hover {
 
     .nav-link label {
         display: none;
+    }
+
+    .muted .fa-camera::after {
+        font-size: 52px;
+        left: 4px;
+        top: -6px;
     }
 
     .nav-text {
@@ -1346,8 +1400,8 @@ header .collapse:hover {
 
 :root{
     --contextualMenuBg: #eee;
-    --contextualMenuShadow: 1px 1px 1px #444; */
-    --contextualMenuRadius: 0px; */
+    --contextualMenuShadow: 1px 1px 1px #444;
+    --contextualMenuRadius: 0px;
     --contextualMenuText: black;
 
     --contextualSubMenuBg: #eee;
@@ -1425,4 +1479,96 @@ header .collapse:hover {
 }
 .toastify.info .toast-close {
     color: #000;
+}
+
+
+#recordbutton {
+    display: none;
+}
+
+#permission {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: #00000033;
+    z-index: 2000;
+}
+
+#permission-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 24px;
+
+    padding: 24px;
+
+    border-radius: 24px;
+    background-color: #E0DED9;
+    box-shadow: 0 6px 24px #00000033;
+}
+
+#permission-modal p {
+    color: #000;
+}
+
+.hidden {
+    opacity: 0;
+
+    transform: scale(0) translateY(-200px);
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(.85,-0.4,.2,1.5);
+}
+
+.shown {
+    opacity: 1;
+
+    transform: scale(1) translateY(0);
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(.85,-0.4,.2,1.5);
+}
+
+#btn-modal {
+    padding: 12px 24px;
+    width: fit-content;
+
+    outline: none;
+    border: none;
+    border-radius: 12px;
+    background-color: #1c1c1b;
+    
+    font-size: 1em;
+    color: #E0DED9;
+
+    cursor: pointer;
+}
+
+#btn-modal:hover {
+    background-color: #3a3a39;
+}
+
+#collapse-container{
+    margin-top: 12px;
+    border: lightgray solid 1px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#collapseoptionsbtn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#advancedoptions {
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    max-height: 0;
 }

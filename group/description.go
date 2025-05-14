@@ -227,6 +227,8 @@ type Description struct {
 	// the APIFromNames function.
 	Codecs []string `json:"codecs,omitempty"`
 
+	CustomUi string `json:"customUi,omitempty"`
+
 	// Obsolete fields
 	Op             []ClientPattern `json:"op,omitempty"`
 	Presenter      []ClientPattern `json:"presenter,omitempty"`
