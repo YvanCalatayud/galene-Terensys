@@ -557,9 +557,14 @@ function setViewportHeight() {
 addEventListener('resize', setViewportHeight);
 addEventListener('orientationchange', setViewportHeight);
 
-document.getElementById('camerabutton').onclick = async function(e) {
+let cameraBusy = false;
+
+document.getElementById('camerabutton').onclick = async function (e) {
     e.preventDefault();
-    
+
+    if (cameraBusy) return;
+    cameraBusy = true;
+
     const button = document.getElementById('camerabutton');
 
     const modal = document.getElementById('permission');
@@ -604,6 +609,8 @@ document.getElementById('camerabutton').onclick = async function(e) {
     } else {
         await addCameraMedia(button);
     }
+    
+    cameraBusy = false;
 };
 
 async function addCameraMedia(cameraButton) {
@@ -2431,6 +2438,7 @@ function registerControlHandlers(localId, media, container) {
                 if(!c)
                     throw new Error('Closing unknown stream');
                 c.close();
+                document.getElementById('camerabutton').classList.add('muted');
             } catch(e) {
                 console.error(e);
                 displayError(e);
