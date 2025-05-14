@@ -2409,6 +2409,7 @@ function registerControlHandlers(localId, media, container) {
                 if(!c)
                     throw new Error('Closing unknown stream');
                 c.close();
+                document.getElementById('camerabutton').classList.add('muted');
             } catch(e) {
                 console.error(e);
                 displayError(e);
