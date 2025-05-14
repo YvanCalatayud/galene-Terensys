@@ -559,9 +559,14 @@ function setViewportHeight() {
 addEventListener('resize', setViewportHeight);
 addEventListener('orientationchange', setViewportHeight);
 
-document.getElementById('camerabutton').onclick = async function(e) {
+let cameraBusy = false;
+
+document.getElementById('camerabutton').onclick = async function (e) {
     e.preventDefault();
-    
+
+    if (cameraBusy) return;
+    cameraBusy = true;
+
     const button = document.getElementById('camerabutton');
     const settings = getSettings();
 
@@ -609,6 +614,8 @@ document.getElementById('camerabutton').onclick = async function(e) {
     } else {
         await addCameraMedia(button);
     }
+    
+    cameraBusy = false;
 };
 
 async function addCameraMedia(cameraButton) {
