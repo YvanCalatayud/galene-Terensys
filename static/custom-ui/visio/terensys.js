@@ -68,7 +68,6 @@ let probingState = null;
  * @typedef {Object} settings - the type of stored settings
  * @property {boolean} [localMute]
  * @property {string} [video]
- * @property {boolean} [isAllowed]
  * @property {string} [audio]
  * @property {string} [simulcast]
  * @property {string} [send]
@@ -208,7 +207,6 @@ function reflectSettings() {
     let store = false;
 
     settings.localMute = true;
-    settings.isAllowed = false;
     
     store = true;
     setLocalMute(settings.localMute);
@@ -568,43 +566,40 @@ document.getElementById('camerabutton').onclick = async function (e) {
     cameraBusy = true;
 
     const button = document.getElementById('camerabutton');
-    const settings = getSettings();
 
-    // console.log('allowed', serverConnection.permissions.indexOf('present'))
+    const modal = document.getElementById('permission');
+    const message = document.getElementById('permission-modal');
+    const text = document.getElementById('modal-text');
 
     // modal
-    if (!settings.isAllowed) {
-        try {
-            const perm = navigator.mediaDevices.getUserMedia({ video: true });
-    
-            if (!(perm instanceof MediaStream)) {
-                const modal = document.getElementById('permission');
-                const message = document.getElementById('permission-modal');
+    navigator.permissions.query({ name: 'camera' })
+    .then(function(permissionStatus) {
+        switch (permissionStatus.state) {
+            case 'granted':
+                break;
+
+            case 'denied':
                 modal.style.display = "flex";
+                text.innerText = "Vous devez autoriser l'acces a votre camera afin d'être vu";
+                setTimeout(() => {
+                    message.classList.add('shown');
+                });
+
+                break;
+            
+            case 'prompt':
+                modal.style.display = "flex";
+                text.innerText = "Vous devez autoriser l'acces a votre camera afin d'être vu";
                 setTimeout(() => {
                     message.classList.add('shown');
                 })
-            }
 
-            const perme = await navigator.mediaDevices.getUserMedia({ video: true })
-
-            if (perme instanceof MediaStream) {
-                updateSettings({isAllowed: true});
-                console.log('gg ez');
-            }
-        } catch(error) {
-            console.log('Acces non autorisé');
-    
-            const modal = document.getElementById('permission');
-            const message = document.getElementById('permission-modal');
-            modal.style.display = "flex";
-            setTimeout(() => {
-                message.classList.add('shown');
-            })
-    
-            updateSettings({isAllowed: false})
+                break;
         }
-    }
+    })
+    .catch(function(err) {
+        console.error('Erreur lors de la vérification de la permission caméra :', err);
+    });
 
     const camStream = findUpMedia('camera');
 
@@ -819,6 +814,40 @@ document.getElementById('mutebutton').onclick = async function(e) {
 
     let localMute = getSettings().localMute;
     localMute = !localMute;
+
+    const modal = document.getElementById('permission');
+    const message = document.getElementById('permission-modal');
+    const text = document.getElementById('modal-text');
+
+    // modal
+    navigator.permissions.query({ name: 'microphone' })
+    .then(function(permissionStatus) {
+        switch (permissionStatus.state) {
+            case 'granted':
+                break;
+
+            case 'denied':
+                modal.style.display = "flex";
+                text.innerText = "Vous devez autoriser l'acces a votre micro afin d'être entendu";
+                setTimeout(() => {
+                    message.classList.add('shown');
+                });
+
+                break;
+            
+            case 'prompt':
+                modal.style.display = "flex";
+                text.innerText = "Vous devez autoriser l'acces a votre micro afin d'être entendu";
+                setTimeout(() => {
+                    message.classList.add('shown');
+                })
+
+                break;
+        }
+    })
+    .catch(function(err) {
+        console.error('Erreur lors de la vérification de la permission caméra :', err);
+    });
 
     // Active/désactive le micro en fonction de localMute
     if (localMute) {
