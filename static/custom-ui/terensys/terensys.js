@@ -557,97 +557,6 @@ function setViewportHeight() {
 addEventListener('resize', setViewportHeight);
 addEventListener('orientationchange', setViewportHeight);
 
-let cameraBusy = false;
-
-document.getElementById('camerabutton').onclick = async function (e) {
-    e.preventDefault();
-
-    if (cameraBusy) return;
-    cameraBusy = true;
-
-    const button = document.getElementById('camerabutton');
-
-    const modal = document.getElementById('permission');
-    const message = document.getElementById('permission-modal');
-    const text = document.getElementById('modal-text');
-
-    // modal
-    navigator.permissions.query({ name: 'camera' })
-    .then(function(permissionStatus) {
-        switch (permissionStatus.state) {
-            case 'granted':
-                break;
-
-            case 'denied':
-                modal.style.display = "flex";
-                text.innerText = "Vous devez autoriser l'acces a votre camera afin d'être vu";
-                setTimeout(() => {
-                    message.classList.add('shown');
-                });
-
-                break;
-            
-            case 'prompt':
-                modal.style.display = "flex";
-                text.innerText = "Vous devez autoriser l'acces a votre camera afin d'être vu";
-                setTimeout(() => {
-                    message.classList.add('shown');
-                })
-
-                break;
-        }
-    })
-    .catch(function(err) {
-        console.error('Erreur lors de la vérification de la permission caméra :', err);
-    });
-
-    const camStream = findUpMedia('camera');
-
-    if (camStream) {
-        closeUpMedia('camera');
-        button.classList.add('muted');
-    } else {
-        await addCameraMedia(button);
-    }
-    
-    cameraBusy = false;
-};
-
-async function addCameraMedia(cameraButton) {
-    let settings = getSettings();
-    let video = settings.video ? {deviceId: settings.video} : false;
-
-    if (video) {
-        let resolution = settings.resolution;
-        if (resolution) {
-            video.width = { ideal: resolution[0] };
-            video.height = { ideal: resolution[1] };
-        } else if (settings.blackboardMode) {
-            video.width = { min: 640, ideal: 1920 };
-            video.height = { min: 400, ideal: 1080 };
-        } else {
-            video.aspectRatio = { ideal: 4 / 3 };
-        }
-    }
-
-    let constraints = { audio: false, video: video };
-    let stream;
-
-    try {
-        stream = await navigator.mediaDevices.getUserMedia(constraints);
-    } catch (e) {
-        displayError(e);
-        return;
-    }
-
-    cameraButton.classList.remove('muted');
-    let c = newUpStream();
-    c.label = 'camera';
-
-    await setUpStream(c, stream);
-    await setMedia(c, settings.mirrorView);
-}
-
 
 // getButtonElement('presentbutton').onclick = async function(e) {
 //     e.preventDefault();
@@ -809,111 +718,6 @@ getInputElement('hqaudiobox').onchange = function(e) {
     replaceCameraStream();
 };
 
-document.getElementById('mutebutton').onclick = async function(e) {
-    e.preventDefault();
-
-    let localMute = getSettings().localMute;
-    localMute = !localMute;
-
-    const modal = document.getElementById('permission');
-    const message = document.getElementById('permission-modal');
-    const text = document.getElementById('modal-text');
-
-    // modal
-    navigator.permissions.query({ name: 'microphone' })
-    .then(function(permissionStatus) {
-        switch (permissionStatus.state) {
-            case 'granted':
-                break;
-
-            case 'denied':
-                modal.style.display = "flex";
-                text.innerText = "Vous devez autoriser l'acces a votre micro afin d'être entendu";
-                setTimeout(() => {
-                    message.classList.add('shown');
-                });
-
-                break;
-            
-            case 'prompt':
-                modal.style.display = "flex";
-                text.innerText = "Vous devez autoriser l'acces a votre micro afin d'être entendu";
-                setTimeout(() => {
-                    message.classList.add('shown');
-                })
-
-                break;
-        }
-    })
-    .catch(function(err) {
-        console.error('Erreur lors de la vérification de la permission caméra :', err);
-    });
-
-    // Active/désactive le micro en fonction de localMute
-    if (localMute) {
-        closeUpMedia('microphone');
-        setLocalMute(localMute, true);
-    } else {
-        await addMicrophoneMedia(localMute);
-    }
-};
-
-
-
-
-
-async function addMicrophoneMedia(localMute) {
-    let settings = getSettings();
-    let audio = settings.audio ? {deviceId: settings.audio} : false;
-
-    if(audio) {
-        if(!settings.preprocessing) {
-            audio.echoCancellation = false;
-            audio.noiseSuppression = false;
-            audio.autoGainControl = false;
-        }
-    }
-
-    let constraints = { audio: audio, video: false };
-    let stream = null;
-
-    try {
-        stream = await navigator.mediaDevices.getUserMedia(constraints);
-    } catch (e) {
-        displayError(e);
-        return;
-    }
-
-    // Mets à jour l'icône et l’état
-    setLocalMute(localMute, true);
-    let c = newUpStream();
-    c.label = 'microphone';
-
-    await setUpStream(c, stream);
-    await setMedia(c, false);
-}
-
-
-
-document.getElementById('sharebutton').onclick = function(e) {
-    e.preventDefault();
-    addShareMedia();
-};
-
-getSelectElement('filterselect').onchange = async function(e) {
-    if(!(this instanceof HTMLSelectElement))
-        throw new Error('Unexpected type for this');
-    updateSettings({filter: this.value});
-    let c = findUpMedia('camera');
-    if(c) {
-        let filter = (this.value && filters[this.value]) || null;
-        if(filter)
-            c.userdata.filterDefinition = filter;
-        else
-            delete c.userdata.filterDefinition;
-        replaceUpStream(c);
-    }
-};
 
 /**
  * Returns the desired max video throughput depending on the settings.
@@ -1896,6 +1700,133 @@ function replaceCameraStream() {
         addLocalMedia(c.localId);
 }
 
+
+let cameraBusy = false;
+let wantsVideo = false;
+let wantsAudio = false;
+
+document.getElementById('camerabutton').onclick = async function (e) {
+    e.preventDefault();
+    if (cameraBusy) return;
+    cameraBusy = true;
+
+    const button = document.getElementById('camerabutton');
+    const modal = document.getElementById('permission');
+    const message = document.getElementById('permission-modal');
+    const text = document.getElementById('modal-text');
+
+    try {
+        const permissionStatus = await navigator.permissions.query({ name: 'camera' });
+        if (permissionStatus.state !== 'granted') {
+            modal.style.display = "flex";
+            text.innerText = "Vous devez autoriser l'accès à votre caméra pour être vu";
+            setTimeout(() => message.classList.add('shown'));
+        }
+    } catch (err) {
+        console.error("Erreur lors de la vérification des permissions caméra :", err);
+    }
+
+    wantsVideo = !wantsVideo;
+    button.classList.toggle('muted', !wantsVideo);
+
+    await updateCombinedMediaStream();
+    cameraBusy = false;
+};
+
+document.getElementById('mutebutton').onclick = async function (e) {
+    e.preventDefault();
+
+    const modal = document.getElementById('permission');
+    const message = document.getElementById('permission-modal');
+    const text = document.getElementById('modal-text');
+
+    try {
+        const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+        if (permissionStatus.state !== 'granted') {
+            modal.style.display = "flex";
+            text.innerText = "Vous devez autoriser l'accès à votre micro pour être entendu";
+            setTimeout(() => message.classList.add('shown'));
+        }
+    } catch (err) {
+        console.error("Erreur lors de la vérification des permissions micro :", err);
+    }
+
+    wantsAudio = !wantsAudio;
+    document.getElementById('mutebutton').classList.toggle('muted', !wantsAudio);
+    setLocalMute(!wantsAudio, true);
+
+    await updateCombinedMediaStream();
+};
+
+async function updateCombinedMediaStream() {
+    if (!wantsAudio && !wantsVideo) {
+        const oldStream = findUpMedia('camera') || findUpMedia('microphone');
+        if (oldStream) {
+            stopStream(oldStream.stream);
+            oldStream.close();
+        }
+        return;
+    }
+
+    const settings = getSettings();
+
+    const constraints = {
+        audio: false,
+        video: false
+    };
+
+    if (wantsAudio && settings.audio) {
+        constraints.audio = { deviceId: settings.audio };
+        if (!settings.preprocessing) {
+            constraints.audio.echoCancellation = false;
+            constraints.audio.noiseSuppression = false;
+            constraints.audio.autoGainControl = false;
+        }
+    }
+
+    if (wantsVideo && settings.video) {
+        constraints.video = { deviceId: settings.video };
+        let resolution = settings.resolution;
+        if (resolution) {
+            constraints.video.width = { ideal: resolution[0] };
+            constraints.video.height = { ideal: resolution[1] };
+        } else if (settings.blackboardMode) {
+            constraints.video.width = { min: 640, ideal: 1920 };
+            constraints.video.height = { min: 400, ideal: 1080 };
+        } else {
+            constraints.video.aspectRatio = { ideal: 4 / 3 };
+        }
+    }
+
+    let stream;
+    try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (e) {
+        displayError(e);
+        return;
+    }
+
+    const label = wantsVideo ? 'camera' : 'microphone';
+    const oldStream = findUpMedia('camera') || findUpMedia('microphone');
+    if (oldStream) {
+        stopStream(oldStream.stream);
+        oldStream.close();
+    }
+
+    const c = newUpStream();
+    c.label = label;
+
+    if (wantsVideo && settings.filter) {
+        const filter = filters[settings.filter];
+        if (filter) {
+            c.userdata.filterDefinition = filter;
+        }
+    }
+
+    await setUpStream(c, stream);
+    await setMedia(c, wantsVideo ? settings.mirrorView : false);
+}
+
 /**
  * @param {string} [localId]
  */
@@ -2431,14 +2362,17 @@ function registerControlHandlers(localId, media, container) {
 
     let stop = getVideoButton(container, 'video-stop');
     if(stop) {
-        stop.onclick = function(event) {
+        stop.onclick = async function(event) {
             event.preventDefault();
             try {
-                let c = serverConnection.findByLocalId(localId);
-                if(!c)
-                    throw new Error('Closing unknown stream');
-                c.close();
+                // Mise à jour de l'état vidéo uniquement
+                wantsVideo = false;
+
+                // Visuel bouton caméra
                 document.getElementById('camerabutton').classList.add('muted');
+
+                // Mise à jour du flux (conserve le micro si actif)
+                await updateCombinedMediaStream();
             } catch(e) {
                 console.error(e);
                 displayError(e);
