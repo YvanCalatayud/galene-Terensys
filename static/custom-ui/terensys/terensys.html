@@ -209,6 +209,20 @@
             </select>
           </form>
 
+          <form id="backgroundform">
+            <label>Choisir un fond prédéfini :
+              <select id="background-select" class="select select-inline">
+                <option value="/third-party/backgrounds/beach.jpg">Plage</option>
+                <option value="/third-party/backgrounds/forest.jpg">Forêt</option>
+              </select>
+            </label>
+            
+            <label>ou un fichier</label>
+            <label for="background-file" class="btn btn-outlined" id="background-file-btn">Aucun fichier</label>
+            <input type="file" id="background-file" accept="image/*">
+
+          </form>
+
           <form id="sendform">
             <label for="sendselect" class="sidenav-label-first">Send:</label>
             <select id="sendselect" class="select select-inline">

@@ -228,7 +228,11 @@ function reflectSettings() {
     audioselect.value = settings.audio;
 
     if(settings.hasOwnProperty('filter')) {
-        getSelectElement('filterselect').value = settings.filter;
+        const filterselect = getSelectElement('filterselect')
+        filterselect.value = settings.filter;
+        if(filterselect.value == 'background-image') {
+            document.getElementById('backgroundform').style.display = 'inline'
+        }
     } else {
         let s = getSelectElement('filterselect').value;
         if(s) {
@@ -716,6 +720,32 @@ getInputElement('hqaudiobox').onchange = function(e) {
         throw new Error('Unexpected type for this');
     updateSettings({hqaudio: this.checked});
     replaceCameraStream();
+};
+
+
+document.getElementById('sharebutton').onclick = function(e) {
+    e.preventDefault();
+    addShareMedia();
+};
+
+getSelectElement('filterselect').onchange = async function(e) {
+    if(!(this instanceof HTMLSelectElement))
+        throw new Error('Unexpected type for this');
+    updateSettings({filter: this.value});
+    let c = findUpMedia('camera');
+    if(c) {
+        let filter = (this.value && filters[this.value]) || null;
+        if(filter)
+            c.userdata.filterDefinition = filter;
+        else
+            delete c.userdata.filterDefinition;
+        replaceUpStream(c);
+    }
+    if(this.value == 'background-image') {
+        document.getElementById('backgroundform').style.display = 'inline';
+    } else {
+        document.getElementById('backgroundform').style.display = 'none';
+    }
 };
 
 
@@ -1463,7 +1493,163 @@ let filters = {
             return true;
         },
     },
+    'background-image': {
+        description: 'Background image',
+        predicate: async function() {
+            let r = await fetch('/third-party/tasks-vision/vision_bundle.mjs', {
+                method: 'HEAD',
+            });
+            if(!r.ok) {
+                if(r.status !== 404)
+                    console.warn(
+                        `Fetch vision_bundle.mjs: ${r.status} ${r.statusText}`,
+                    );
+                return false;
+            }
+            return true;
+        },
+        init: async function(ctx) {
+            if(!(this instanceof Filter))
+                throw new Error('Bad type for this');
+            if(this.userdata.worker)
+                throw new Error("Worker already running (this shouldn't happen)")
+            this.userdata.worker = new Worker('/background-blur-worker.js');
+            await workerSendReceive(this.userdata.worker, {
+                model: '/third-party/tasks-vision/models/selfie_segmenter.tflite',
+            });
+        },
+        cleanup: async function() {
+            if(this.userdata.worker.onmessage) {
+                this.userdata.worker.onmessage(null);
+            }
+            this.userdata.worker.terminate();
+            this.userdata.worker = null;
+        },
+        draw: async function(src, ctx) {
+            if (!this.userdata.backgroundImg) {
+                console.warn("Image de fond non définie");
+                if(backgroundfile){
+                    this.userdata.backgroundImg = backgroundfile;
+                } else {
+                    this.userdata.backgroundImg = await loadImage('/third-party/backgrounds/beach.jpg')
+                }
+            }
+            let bitmap = await createImageBitmap(src);
+            try {
+                let result = await workerSendReceive(this.userdata.worker, {
+                    bitmap: bitmap,
+                    timestamp: performance.now(),
+                }, [bitmap]);
+        
+                if(!result)
+                    return false;
+        
+                let mask = result.mask;
+                bitmap = result.bitmap;
+        
+                if(ctx.canvas.width !== src.videoWidth || 
+                    ctx.canvas.height !== src.videoHeight) {
+                    ctx.canvas.width = src.videoWidth;
+                    ctx.canvas.height = src.videoHeight;
+                }
+        
+                ctx.globalCompositeOperation = 'copy';
+                ctx.drawImage(this.userdata.backgroundImg, 0, 0, ctx.canvas.width, ctx.canvas.height);
+        
+                ctx.globalCompositeOperation = 'destination-in';
+                ctx.drawImage(mask, 0, 0);
+                
+                ctx.globalCompositeOperation = 'destination-atop';
+                ctx.drawImage(result.bitmap, 0, 0);
+        
+                ctx.globalCompositeOperation = 'source-over';
+        
+                mask.close();
+            } finally {
+                bitmap.close();
+            }
+        
+            return true;
+        }        
+    },
+
 };
+
+function loadImage(src) {
+    return new Promise((resolve, reject) => {
+        let img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+    });
+}
+
+function loadImageFromFileSafe(file) {
+    return createImageBitmap(file);
+}
+
+
+document.getElementById('background-select').addEventListener('change', async e => {
+    const url = e.target.value;
+    try {
+        const img = await loadImage(url);
+
+        const c = findUpMedia('camera');
+        const filter = c?.userdata?.filter;
+
+        document.getElementById('background-file').value = null
+        const label = document.getElementById('background-file-btn');
+        label.textContent = 'Aucun fichier';
+        
+        backgroundfile = img;
+
+        if (!filter) {
+            console.warn("Aucun filtre actif.");
+            return;
+        }
+
+        if (!filter.userdata)
+            filter.userdata = {};
+        filter.userdata.backgroundImg = img;
+
+        
+    } catch (err) {
+        console.error('Erreur de chargement du fond prédéfini:', err);
+    }
+});
+
+let backgroundfile;
+
+document.getElementById('background-file').addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+        document.getElementById('background-select').selectedIndex = -1
+        const label = document.getElementById('background-file-btn');
+        label.textContent = e.target.files.length ? e.target.files[0].name : 'Aucun fichier';
+
+        const bitmap = await loadImageFromFileSafe(file);
+
+        const c = findUpMedia('camera');
+        const filter = c?.userdata?.filter;
+
+        if (!filter) {
+            console.warn("Aucun filtre actif.");
+            backgroundfile = bitmap
+            return;
+        }
+
+        if (!filter.userdata)
+            filter.userdata = {};
+        filter.userdata.backgroundImg = bitmap;
+
+    } catch (err) {
+        console.error('Erreur de chargement du fichier image via createImageBitmap:', err);
+    }
+});
+
 
 async function addFilters() {
     for(let name in filters) {
@@ -4599,7 +4785,7 @@ async function start() {
         window.history.replaceState(null, '', window.location.pathname);
     setTitle(groupStatus.displayName || capitalise(group));
 
-    addFilters();
+    await addFilters();
     await setMediaChoices(false);
     reflectSettings();
 

@@ -169,6 +169,14 @@
     transition-duration: 0.4s;
 }
 
+.btn-outlined {
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+
 .btn-small {
     color: #004554;
     cursor: pointer;
@@ -1571,4 +1579,12 @@ header .collapse:hover {
     overflow: hidden;
     transition: max-height 0.2s ease-out;
     max-height: 0;
+}
+
+#backgroundform {
+    display: none;
+}
+
+#background-file {
+    display: none;
 }
