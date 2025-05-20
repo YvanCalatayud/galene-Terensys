@@ -1601,7 +1601,7 @@ document.getElementById('background-select').addEventListener('change', async e 
         document.getElementById('background-file').value = null
         const label = document.getElementById('background-file-btn');
         label.textContent = 'Aucun fichier';
-        
+
         backgroundfile = img;
 
         if (!filter) {
@@ -1632,12 +1632,13 @@ document.getElementById('background-file').addEventListener('change', async e =>
 
         const bitmap = await loadImageFromFileSafe(file);
 
+        backgroundfile = bitmap
+
         const c = findUpMedia('camera');
         const filter = c?.userdata?.filter;
 
         if (!filter) {
             console.warn("Aucun filtre actif.");
-            backgroundfile = bitmap
             return;
         }
 
