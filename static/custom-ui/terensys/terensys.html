@@ -41,7 +41,7 @@
             <li>
               <div id="mutebutton" class="nav-link nav-button mutebutton">
                 <span><i class="fas fa-microphone-slash" aria-hidden="true"></i></span>
-                <label>Mute</label>
+                <label>Micro</label>
               </div>
             </li>
             <li>
@@ -171,24 +171,26 @@
           <option value="">off</option>
         </select>
 
-        <form>
-          <input id="mirrorbox" type="checkbox" checked/>
-          <label for="mirrorbox">Mirror view</label>
+        <form id="filterform">
+          <label for="filterselect" class="sidenav-label-first">Filter:</label>
+          <select id="filterselect" class="select select-inline">
+            <option value="" selected>none</option>
+          </select>
         </form>
 
-        <form>
-          <input id="blackboardbox" type="checkbox"/>
-          <label for="blackboardbox">Blackboard mode</label>
-        </form>
+        <form id="backgroundform">
+          <label>Choisir un fond prédéfini :
+            <select id="background-select" class="select select-inline">
+              <option value="/third-party/backgrounds/FondGaleneTerensys.png">Terensys</option>
+              <option value="/third-party/backgrounds/beach.jpg">Plage</option>
+              <option value="/third-party/backgrounds/forest.jpg">Forêt</option>
+            </select>
+          </label>
+          
+          <label>ou un fichier</label>
+          <label for="background-file" class="btn btn-outlined" id="background-file-btn">Aucun fichier</label>
+          <input type="file" id="background-file" accept="image/*">
 
-        <form>
-          <input id="preprocessingbox" type="checkbox"/ checked>
-          <label for="preprocessingbox">Noise suppression</label>
-        </form>
-
-        <form>
-          <input id="hqaudiobox" type="checkbox"/>
-          <label for="hqaudiobox">High-quality audio</label>
         </form>
 
       </fieldset>
@@ -202,25 +204,24 @@
         <fieldset>
           <legend>Other Settings</legend>
 
-          <form id="filterform">
-            <label for="filterselect" class="sidenav-label-first">Filter:</label>
-            <select id="filterselect" class="select select-inline">
-              <option value="" selected>none</option>
-            </select>
+          <form>
+            <input id="mirrorbox" type="checkbox" checked/>
+            <label for="mirrorbox">Mirror view</label>
           </form>
-
-          <form id="backgroundform">
-            <label>Choisir un fond prédéfini :
-              <select id="background-select" class="select select-inline">
-                <option value="/third-party/backgrounds/beach.jpg">Plage</option>
-                <option value="/third-party/backgrounds/forest.jpg">Forêt</option>
-              </select>
-            </label>
-            
-            <label>ou un fichier</label>
-            <label for="background-file" class="btn btn-outlined" id="background-file-btn">Aucun fichier</label>
-            <input type="file" id="background-file" accept="image/*">
-
+  
+          <form>
+            <input id="blackboardbox" type="checkbox"/>
+            <label for="blackboardbox">Blackboard mode</label>
+          </form>
+  
+          <form>
+            <input id="preprocessingbox" type="checkbox"/ checked>
+            <label for="preprocessingbox">Noise suppression</label>
+          </form>
+  
+          <form>
+            <input id="hqaudiobox" type="checkbox"/>
+            <label for="hqaudiobox">High-quality audio</label>
           </form>
 
           <form id="sendform">

@@ -1531,7 +1531,7 @@ let filters = {
                 if(backgroundfile){
                     this.userdata.backgroundImg = backgroundfile;
                 } else {
-                    this.userdata.backgroundImg = await loadImage('/third-party/backgrounds/beach.jpg')
+                    this.userdata.backgroundImg = await loadImage('/third-party/backgrounds/FondGaleneTerensys.png')
                 }
             }
             let bitmap = await createImageBitmap(src);
