@@ -1,3 +1,7 @@
+body {
+    background-color: #DDDAD5;
+}
+
 .nav-fixed .topnav {
     z-index: 1039;
 }
@@ -80,6 +84,19 @@
     text-align: center;
 }
 
+#disconnectbutton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 42px;
+    height: 42px;
+
+    border: 1px solid #DDDAD5;
+    border-radius: 50%;
+    background-color: #E8E7E3;
+    box-shadow: 0 0 6px rgba(0, 0, 0, .15);
+}
+
 .logout-icon {
     display: block;
     font-size: 1.5em;
@@ -113,7 +130,7 @@
 
 .sidenav .user-logout a {
     font-size: 1em;
-    padding: 7px 0 0;
+    padding: 0;
     color: #FC5757;
     cursor: pointer;
     line-height: .7;
@@ -256,7 +273,7 @@
 }
 
 .app {
-    background-color: #f4f4f4;
+    background-color: #E8E7E3;
     overflow: hidden;
     margin: 0;
     padding: 0;
@@ -863,11 +880,11 @@ h1 {
 #chat {
     padding: 0;
     margin: 0;
-    background-color: #f8f8f8;
+    background-color: #F4F3F1;
     background-size: cover;
     overflow-y: scroll;
     border: none;
-    border-right: 4px solid #e6e6e6;
+    border-right: 1px solid #DDDAD5;
     /* force to fill height */
     height: 100% !important;
     width: 100%;
@@ -882,7 +899,7 @@ h1 {
 #box {
     overflow: auto;
     height: calc(100% - 53px);
-    padding: 10px;
+    padding: 12px;
 }
 
 .close-chat {
@@ -947,12 +964,12 @@ h1 {
     column-gap: 10px;
     position: absolute;
     top: 0;
-    right: 0; 
+    right: 0;
     bottom: 0;
-    min-width: 100%; 
+    min-width: 100%;
     min-height: 100%;
-    width: auto; 
-    height: auto; 
+    width: auto;
+    height: auto;
     z-index: 1000;
     background-size: cover;
     overflow: hidden;
@@ -1060,15 +1077,27 @@ h1 {
 }
 
 .sidenav-content {
-    padding: 10px;
-    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    padding: 24px;
+    width: 380px;
     height: calc(100% - 56px);
+
+    background: #F4F3F1;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 .sidenav-content h2 {
     margin: 0;
+}
+
+.sidenav-option {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 fieldset {
@@ -1084,14 +1113,18 @@ legend {
 }
 
 .nav-menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+
     margin: 0;
     padding: 0;
 }
 
 .nav-menu li {
-    float: left;
-    max-height: 70px;
     list-style: none;
+    max-height: 70px;
 }
 
 .show-video {
@@ -1133,8 +1166,8 @@ legend {
     min-width: 200px;
     max-width: 200px;
     transition: all 0.3s;
-    background: #ffffff;
-    border-right: 1px solid #dcdcdc;
+    background: #F4F3F1;
+    border-right: 1px solid #DDDAD5;
 }
 
 #left-sidebar .galene-header {
@@ -1189,15 +1222,15 @@ header .collapse:hover {
     width: 100%;
     position: relative;
     display: block;
-    background-color: #fff;
+    background-color: #F4F3F1;
     overflow-y: auto;
-    border: 1px solid #f7f7f7;
+    border: none;
 }
 
 #users .user-p {
     position: relative;
     padding: 10px !important;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #DDDAD5;
     height: 40px;
     line-height: 18px;
     margin: 0 !important;
@@ -1211,7 +1244,7 @@ header .collapse:hover {
 }
 
 #users > div:hover {
-    background-color: #f2f2f2;
+    background-color: #E8E7E3;
 }
 
 #users > div::before {
@@ -1347,7 +1380,7 @@ header .collapse:hover {
 
     /* Reappearing the sidebar on toggle button click */
     #left-sidebar {
-        margin-left: 0; 
+        margin-left: 0;
     }
 
     #left-sidebar .sidebar-header strong {
@@ -1392,7 +1425,6 @@ header .collapse:hover {
     width: 100%;
     pointer-events: none;
     z-index: 1390;
-    alpha: 0;
 }
 
 #captions {
@@ -1551,7 +1583,7 @@ header .collapse:hover {
     border: none;
     border-radius: 12px;
     background-color: #1c1c1b;
-    
+
     font-size: 1em;
     color: #E0DED9;
 

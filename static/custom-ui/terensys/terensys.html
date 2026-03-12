@@ -30,7 +30,7 @@
               </button>
             </li> -->
             <li>
-              <button class="btn btn-success" id="recordbutton">Start Record</button>
+              <button class="btn btn-success" id="recordbutton">Commencer l'enregistrement</button>
             </li>
             <li>
               <div id="camerabutton" class="nav-link nav-button muted camerabutton">
@@ -47,7 +47,7 @@
             <li>
               <div id="sharebutton" class="invisible nav-link nav-button">
                 <span><i class="fas fa-share-square" aria-hidden="true"></i></span>
-                <label>Share Screen</label>
+                <label>Partage d'écran</label>
               </div>
             </li>
             <li>
@@ -110,7 +110,7 @@
                 <div id="showPswBtn-container">
                   <div class="btn-small" id="showPswBtn">Se connecter en tant qu'admin</div>
                 </div>
-                
+
                 <!-- <label>Enable at start:</label>
                 <div class="present-switch">
                   <p class="switch-radio">
@@ -158,118 +158,122 @@
         </div>
       </div>
     </div>
-    <div id="mediaoptions">
-      <fieldset>
-        <legend>Media Options</legend>
-        <label for="videoselect" class="sidenav-label-first">Camera:</label>
-        <select id="videoselect" class="select select-inline">
-          <option value="">off</option>
-        </select>
-
-        <label for="audioselect" class="sidenav-label">Microphone:</label>
-        <select id="audioselect" class="select select-inline">
-          <option value="">off</option>
-        </select>
-
-        <form id="filterform">
-          <label for="filterselect" class="sidenav-label-first">Filter:</label>
-          <select id="filterselect" class="select select-inline">
-            <option value="" selected>none</option>
-          </select>
-        </form>
-
-        <form id="backgroundform">
-          <label>Choisir un fond prédéfini :
-            <select id="background-select" class="select select-inline">
-              <option value="/third-party/backgrounds/FondGaleneTerensys.png">Terensys</option>
-              <option value="/third-party/backgrounds/beach.jpg">Plage</option>
-              <option value="/third-party/backgrounds/forest.jpg">Forêt</option>
+    <div class="sidenav-option">
+        <div id="mediaoptions">
+          <fieldset>
+            <legend>Media Options</legend>
+            <label for="videoselect" class="sidenav-label-first">Camera:</label>
+            <select id="videoselect" class="select select-inline">
+              <option value="">off</option>
             </select>
-          </label>
-          
-          <label>ou un fichier</label>
-          <label for="background-file" class="btn btn-outlined" id="background-file-btn">Aucun fichier</label>
-          <input type="file" id="background-file" accept="image/*">
 
-        </form>
+            <label for="audioselect" class="sidenav-label">Microphone:</label>
+            <select id="audioselect" class="select select-inline">
+              <option value="">off</option>
+            </select>
 
-      </fieldset>
+            <form id="filterform">
+              <label for="filterselect" class="sidenav-label-first">Filter:</label>
+              <select id="filterselect" class="select select-inline">
+                <option value="" selected>none</option>
+              </select>
+            </form>
+
+            <form id="backgroundform">
+              <label>Choisir un fond prédéfini :
+                <select id="background-select" class="select select-inline">
+                  <option value="/third-party/backgrounds/FondGaleneTerensys.png">Terensys</option>
+                  <option value="/third-party/backgrounds/beach.jpg">Plage</option>
+                  <option value="/third-party/backgrounds/forest.jpg">Forêt</option>
+                </select>
+              </label>
+
+              <label>ou un fichier</label>
+              <label for="background-file" class="btn btn-outlined" id="background-file-btn">Aucun fichier</label>
+              <input type="file" id="background-file" accept="image/*">
+
+            </form>
+
+          </fieldset>
+        </div>
+
+        <div id="collapse-container">
+          <legend>
+            <div id="collapseoptionsbtn">Options avancées <i class="fa-solid fa-angle-down"></i></div>
+          </legend>
+
+          <div id="advancedoptions">
+            <fieldset>
+              <legend>Other Settings</legend>
+
+              <form>
+                <input id="mirrorbox" type="checkbox" checked/>
+                <label for="mirrorbox">Mirror view</label>
+              </form>
+
+              <form>
+                <input id="blackboardbox" type="checkbox"/>
+                <label for="blackboardbox">Blackboard mode</label>
+              </form>
+
+              <form>
+                <input id="preprocessingbox" type="checkbox" checked/>
+                <label for="preprocessingbox">Noise suppression</label>
+              </form>
+
+              <form>
+                <input id="hqaudiobox" type="checkbox"/>
+                <label for="hqaudiobox">High-quality audio</label>
+              </form>
+
+              <form id="sendform">
+                <label for="sendselect" class="sidenav-label-first">Send:</label>
+                <select id="sendselect" class="select select-inline">
+                  <option value="lowest">lowest</option>
+                  <option value="low">low</option>
+                  <option value="normal" selected>normal</option>
+                  <option value="unlimited">unlimited</option>
+                </select>
+              </form>
+
+              <form id="simulcastform">
+                <label for="simulcastselect" class="sidenav-label-first">Simulcast:</label>
+                <select id="simulcastselect" class="select select-inline">
+                  <option value="off">off</option>
+                  <option value="auto" selected>auto</option>
+                  <option value="on">on</option>
+                </select>
+              </form>
+
+              <form id="requestform">
+                <label for="requestselect" class="sidenav-label">Receive:</label>
+                <select id="requestselect" class="select select-inline">
+                  <option value="">nothing</option>
+                  <option value="audio">audio only</option>
+                  <option value="screenshare">screenshare only</option>
+                  <option value="everything-low">low quality</option>
+                  <option value="everything" selected>everything</option>
+                </select>
+              </form>
+
+              <form>
+                <input id="activitybox" type="checkbox"/>
+                <label for="activitybox">Activity detection</label>
+              </form>
+
+              <form>
+                <input id="displayallbox" type="checkbox"/>
+                <label for="displayallbox">Display audio-only users</label>
+              </form>
+            </fieldset>
+          </div>
+        </div>
     </div>
-    <div id="collapse-container">
-      <legend>
-        <div id="collapseoptionsbtn">Options avancées <i class="fa-solid fa-angle-down"></i></div>
-      </legend>
-      
-      <div id="advancedoptions">
-        <fieldset>
-          <legend>Other Settings</legend>
 
-          <form>
-            <input id="mirrorbox" type="checkbox" checked/>
-            <label for="mirrorbox">Mirror view</label>
-          </form>
-  
-          <form>
-            <input id="blackboardbox" type="checkbox"/>
-            <label for="blackboardbox">Blackboard mode</label>
-          </form>
-  
-          <form>
-            <input id="preprocessingbox" type="checkbox" checked/>
-            <label for="preprocessingbox">Noise suppression</label>
-          </form>
-  
-          <form>
-            <input id="hqaudiobox" type="checkbox"/>
-            <label for="hqaudiobox">High-quality audio</label>
-          </form>
-
-          <form id="sendform">
-            <label for="sendselect" class="sidenav-label-first">Send:</label>
-            <select id="sendselect" class="select select-inline">
-              <option value="lowest">lowest</option>
-              <option value="low">low</option>
-              <option value="normal" selected>normal</option>
-              <option value="unlimited">unlimited</option>
-            </select>
-          </form>
-
-          <form id="simulcastform">
-            <label for="simulcastselect" class="sidenav-label-first">Simulcast:</label>
-            <select id="simulcastselect" class="select select-inline">
-              <option value="off">off</option>
-              <option value="auto" selected>auto</option>
-              <option value="on">on</option>
-            </select>
-          </form>
-
-          <form id="requestform">
-            <label for="requestselect" class="sidenav-label">Receive:</label>
-            <select id="requestselect" class="select select-inline">
-              <option value="">nothing</option>
-              <option value="audio">audio only</option>
-              <option value="screenshare">screenshare only</option>
-              <option value="everything-low">low quality</option>
-              <option value="everything" selected>everything</option>
-            </select>
-          </form>
-  
-          <form>
-            <input id="activitybox" type="checkbox"/>
-            <label for="activitybox">Activity detection</label>
-          </form>
-
-          <form>
-            <input id="displayallbox" type="checkbox"/>
-            <label for="displayallbox">Display audio-only users</label>
-          </form>
-        </fieldset>
-      </div>
-    </div>
     <div class="user-logout">
-      <a id="disconnectbutton">
+      <a id="disconnectbutton" title="deconnexion">
         <span class="logout-icon"><i class="fas fa-sign-out-alt"></i></span>
-        <span class="logout-text">Logout</span>
+        <!-- <span class="logout-text">Logout</span> -->
       </a>
     </div>
   </div>

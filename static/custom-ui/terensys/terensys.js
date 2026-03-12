@@ -207,7 +207,7 @@ function reflectSettings() {
     let store = false;
 
     settings.localMute = true;
-    
+
     store = true;
     setLocalMute(settings.localMute);
 
@@ -601,7 +601,7 @@ document.getElementById('showPswBtn').onclick = function(e) {
     const elt = document.getElementById('passwordform');
     const button = document.getElementById('showPswBtn');
     const currentlyVisible = !elt.classList.contains('invisible');
-    
+
     setVisibility('passwordform', !currentlyVisible);
 
     if (currentlyVisible) {
@@ -1540,37 +1540,37 @@ let filters = {
                     bitmap: bitmap,
                     timestamp: performance.now(),
                 }, [bitmap]);
-        
+
                 if(!result)
                     return false;
-        
+
                 let mask = result.mask;
                 bitmap = result.bitmap;
-        
-                if(ctx.canvas.width !== src.videoWidth || 
+
+                if(ctx.canvas.width !== src.videoWidth ||
                     ctx.canvas.height !== src.videoHeight) {
                     ctx.canvas.width = src.videoWidth;
                     ctx.canvas.height = src.videoHeight;
                 }
-        
+
                 ctx.globalCompositeOperation = 'copy';
                 ctx.drawImage(this.userdata.backgroundImg, 0, 0, ctx.canvas.width, ctx.canvas.height);
-        
+
                 ctx.globalCompositeOperation = 'destination-in';
                 ctx.drawImage(mask, 0, 0);
-                
+
                 ctx.globalCompositeOperation = 'destination-atop';
                 ctx.drawImage(result.bitmap, 0, 0);
-        
+
                 ctx.globalCompositeOperation = 'source-over';
-        
+
                 mask.close();
             } finally {
                 bitmap.close();
             }
-        
+
             return true;
-        }        
+        }
     },
 
 };
@@ -1613,7 +1613,7 @@ document.getElementById('background-select').addEventListener('change', async e 
             filter.userdata = {};
         filter.userdata.backgroundImg = img;
 
-        
+
     } catch (err) {
         console.error('Erreur de chargement du fond prédéfini:', err);
     }
@@ -2235,7 +2235,7 @@ function muteLocalTracks(mute) {
         // if(c.label === 'camera') {
             let stream = c.stream;
             stream.getTracks().forEach(t => {
-                if(t.kind === 'audio') {    
+                if(t.kind === 'audio') {
                     t.enabled = !mute;
                 }
             });
@@ -2416,9 +2416,9 @@ async function setMedia(c, mirror, video) {
     setLabel(c);
     setMediaStatus(c);
 
-    
+
     showVideo();
-    
+
     resizePeers();
 }
 
@@ -2719,7 +2719,7 @@ function resizePeers() {
     if (!count)
         // No video, nothing to resize.
         return;
-    
+
     // Peers div has total padding of 40px, we remove 40 on offsetHeight
     // Grid has row-gap of 5px
     let rows = Math.ceil(count / columns);
@@ -3202,7 +3202,7 @@ async function gotJoined(kind, group, perms, status, data, error, message) {
             } finally {
                 button.disabled = false;
             }
-            
+
         } /* else {
             displayMessage(
                 "Press Enable to enable your camera or microphone"
@@ -4667,7 +4667,7 @@ document.getElementById('disconnectbutton').onclick = function(e) {
 };
 
 function openNav() {
-    document.getElementById("sidebarnav").style.width = "250px";
+    document.getElementById("sidebarnav").style.width = "380px";
 }
 
 function closeNav() {
@@ -4829,7 +4829,7 @@ document.getElementById('btn-modal').onclick = async function(e) {
 
     const modal = document.getElementById('permission');
     const message = document.getElementById('permission-modal');
-    
+
     message.classList.remove('shown');
     setTimeout(() => {
         modal.style.display = 'none';
@@ -4849,7 +4849,7 @@ document.getElementById('collapseoptionsbtn').onclick = function(e) {
       content.style.maxHeight = null;
     } else {
       content.style.maxHeight = content.scrollHeight + "px";
-    } 
+    }
 }
 
 
